@@ -1,0 +1,483 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}{{ student.name }} ({{ student.student_id }}) - Academic Profile{% endblock %}
+
+{% block content %}
+<div style="width: 100%; max-width: 1240px; margin: 0 auto;">
+
+    <!-- Top Breadcrumb & Action Strip -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+            <a href="{% url 'dashboard' %}" style="color: #64748b; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Students Directory</span>
+            </a>
+            <span style="color: #cbd5e1;">/</span>
+            <span style="color: #0f172a; font-weight: 700;">{{ student.name }}</span>
+            <span style="font-family: monospace; font-size: 12px; background: #eef2ff; color: #4338ca; padding: 2px 8px; border-radius: 6px; border: 1px solid #c7d2fe; font-weight: 700;">
+                {{ student.student_id }}
+            </span>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            {% if current_user.role == 'Academic Coordinator' %}
+            <button type="button" onclick="openModal('editProfileModal')" class="btn-primary" style="padding: 8px 16px; font-size: 13.5px;">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span>Edit Details</span>
+            </button>
+            <a href="{% url 'delete_student' student.student_id %}" onclick="return confirm('Permanently delete student {{ student.name }} ({{ student.student_id }}) and all related records?')" class="btn-secondary" style="padding: 8px 16px; font-size: 13.5px; color: #dc2626; border-color: #fecaca; background: #fef2f2; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span>Delete Student</span>
+            </a>
+            {% endif %}
+
+            {% if current_user.role == 'Teacher' %}
+            <button type="button" onclick="openModal('addMarksModal')" class="btn-primary" style="padding: 8px 16px; font-size: 13.5px;">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Add Marks</span>
+            </button>
+            <button type="button" onclick="openModal('recordAttendanceModal')" class="btn-secondary" style="padding: 8px 16px; font-size: 13.5px; color: #059669; border-color: #a7f3d0; background: #ecfdf5;">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>Mark Attendance</span>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Student Header Identity Card -->
+    <div style="background: #ffffff; border-radius: 20px; padding: 28px 32px; border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: var(--shadow-card); margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); color: #ffffff; font-size: 28px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.4);">
+                {{ student.name|slice:":1" }}
+            </div>
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                    <h1 style="font-size: 24px; font-weight: 800; color: #0f172a;">{{ student.name }}</h1>
+                    <span class="badge {% if student.status == 'Active' %}badge-success{% else %}badge-neutral{% endif %}">
+                        {{ student.status }}
+                    </span>
+                </div>
+                <div style="font-size: 14px; color: #64748b; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                    <span>🎓 <strong>{{ student.department }}</strong> ({{ student.year }})</span>
+                    <span>✉️ {{ student.email }}</span>
+                    {% if student.phone %}<span>📞 {{ student.phone }}</span>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini Stats Pill on Header -->
+        <div style="display: flex; gap: 16px; background: #f8fafc; padding: 14px 22px; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <div style="text-align: center; padding-right: 16px; border-right: 1px solid #e2e8f0;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Attendance</span>
+                <div style="font-size: 22px; font-weight: 800; color: {% if stats.attendance_pct >= 85 %}#059669{% elif stats.attendance_pct >= 75 %}#d97706{% else %}#dc2626{% endif %}; margin-top: 2px;">
+                    {{ stats.attendance_pct }}%
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Average Marks</span>
+                <div style="font-size: 22px; font-weight: 800; color: #7c3aed; margin-top: 2px;">
+                    {{ stats.average_marks }}%
+                    <span style="font-size: 12px; font-weight: 700; color: #6d28d9;">({{ stats.overall_grade }})</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2 Column Master Layout: Left is Details & Attendance, Right is Marks -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 24px;">
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: MARKS & ACADEMIC EVALUATION     -->
+        <!-- ========================================== -->
+        <div style="background: #ffffff; border-radius: 20px; border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: var(--shadow-card); padding: 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 36px; height: 36px; background: #f5f3ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #7c3aed;">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 18px; font-weight: 700; color: #0f172a;">Academic Marks & Exams</h2>
+                        <span style="font-size: 12.5px; color: #64748b;">{{ marks|length }} recorded subject assessment{{ marks|length|pluralize }}</span>
+                    </div>
+                </div>
+
+                {% if current_user.role == 'Teacher' %}
+                <button type="button" onclick="openModal('addMarksModal')" class="btn-primary" style="padding: 6px 14px; font-size: 12.5px;">
+                    + Record Marks
+                </button>
+                {% else %}
+                <span style="font-size: 11.5px; font-weight: 600; background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 6px;">
+                    Teacher Managed
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- Marks Table -->
+            <div style="overflow-x: auto; border: 1px solid #f1f5f9; border-radius: 12px; margin-bottom: 16px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+                    <thead>
+                        <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; color: #64748b; font-weight: 700; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 10px 14px;">Subject</th>
+                            <th style="padding: 10px 14px;">Exam Type</th>
+                            <th style="padding: 10px 14px;">Score</th>
+                            <th style="padding: 10px 14px;">Grade</th>
+                            {% if current_user.role == 'Teacher' %}
+                            <th style="padding: 10px 14px; text-align: right;">Action</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mark in marks %}
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 12px 14px;">
+                                <strong style="color: #0f172a; display: block;">{{ mark.subject }}</strong>
+                                {% if mark.remarks %}
+                                <span style="font-size: 11px; color: #64748b;">{{ mark.remarks }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 12px 14px; color: #475569;">
+                                {{ mark.exam_type }}
+                                <div style="font-size: 11px; color: #94a3b8;">{{ mark.exam_date }}</div>
+                            </td>
+                            <td style="padding: 12px 14px;">
+                                <strong>{{ mark.score }}</strong><span style="color: #94a3b8; font-size: 11.5px;">/{{ mark.max_score }}</span>
+                                <div style="font-size: 11.5px; color: #64748b; font-weight: 600;">{{ mark.percentage }}%</div>
+                            </td>
+                            <td style="padding: 12px 14px;">
+                                <span class="badge {% if mark.grade == 'A+' or mark.grade == 'A' %}badge-success{% elif mark.grade == 'B' %}badge-primary{% elif mark.grade == 'C' or mark.grade == 'D' %}badge-warning{% else %}badge-danger{% endif %}">
+                                    {{ mark.grade }}
+                                </span>
+                            </td>
+                            {% if current_user.role == 'Teacher' %}
+                            <td style="padding: 12px 14px; text-align: right;">
+                                <a href="{% url 'delete_marks' mark.id %}?student_id={{ student.student_id }}" onclick="return confirm('Remove this mark entry?')" class="btn-danger-subtle" style="padding: 4px 8px; font-size: 11px;">
+                                    Delete
+                                </a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="{% if current_user.role == 'Teacher' %}5{% else %}4{% endif %}" style="padding: 30px; text-align: center; color: #94a3b8;">
+                                No marks recorded yet. {% if current_user.role == 'Teacher' %}Click "Record Marks" to add exam results.{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Grade Scale Legend -->
+            <div style="background: #f8fafc; border-radius: 10px; padding: 12px; font-size: 11.5px; color: #64748b; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                <span><strong>Grade Scale:</strong> A+ (90-100%)</span>
+                <span>A (80-89%)</span>
+                <span>B (70-79%)</span>
+                <span>C (60-69%)</span>
+                <span>D (50-59%)</span>
+                <span>F (&lt;50%)</span>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: ATTENDANCE TRACKING & LOGS      -->
+        <!-- ========================================== -->
+        <div style="background: #ffffff; border-radius: 20px; border: 1px solid rgba(226, 232, 240, 0.9); box-shadow: var(--shadow-card); padding: 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 36px; height: 36px; background: #ecfdf5; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #059669;">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 18px; font-weight: 700; color: #0f172a;">Attendance History</h2>
+                        <span style="font-size: 12.5px; color: #64748b;">{{ stats.total_attendance_records }} recorded day{{ stats.total_attendance_records|pluralize }}</span>
+                    </div>
+                </div>
+
+                {% if current_user.role == 'Teacher' %}
+                <button type="button" onclick="openModal('recordAttendanceModal')" class="btn-primary" style="padding: 6px 14px; font-size: 12.5px; background: linear-gradient(135deg, #059669, #10b981);">
+                    + Log Attendance
+                </button>
+                {% else %}
+                <span style="font-size: 11.5px; font-weight: 600; background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 6px;">
+                    Teacher Managed
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- Attendance Metrics Bar -->
+            <div style="background: #f8fafc; border-radius: 12px; padding: 14px 18px; border: 1px solid #e2e8f0; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <span style="font-size: 12px; color: #64748b; font-weight: 600;">Overall Rate</span>
+                    <div style="font-size: 20px; font-weight: 800; color: {% if stats.attendance_pct >= 85 %}#059669{% elif stats.attendance_pct >= 75 %}#d97706{% else %}#dc2626{% endif %};">
+                        {{ stats.attendance_pct }}%
+                    </div>
+                </div>
+                <div style="text-align: right; font-size: 12.5px; line-height: 1.6;">
+                    <div>Present Days: <strong style="color: #059669;">{{ stats.present_count }}</strong></div>
+                    <div>Absent Days: <strong style="color: #dc2626;">{{ stats.absent_count }}</strong></div>
+                </div>
+            </div>
+
+            <!-- Attendance History Table -->
+            <div style="max-height: 380px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 12px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+                    <thead style="background: #f8fafc; position: sticky; top: 0; z-index: 5;">
+                        <tr style="border-bottom: 1px solid #e2e8f0; color: #64748b; font-weight: 700; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 10px 14px;">Date</th>
+                            <th style="padding: 10px 14px;">Session</th>
+                            <th style="padding: 10px 14px;">Status</th>
+                            <th style="padding: 10px 14px;">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for att in attendance %}
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 10px 14px; font-weight: 600; color: #0f172a;">
+                                {{ att.date }}
+                            </td>
+                            <td style="padding: 10px 14px; color: #475569;">
+                                {{ att.session }}
+                            </td>
+                            <td style="padding: 10px 14px;">
+                                {% if att.status == 'Present' %}
+                                    <span class="badge badge-success">Present</span>
+                                {% elif att.status == 'Absent' %}
+                                    <span class="badge badge-danger">Absent</span>
+                                {% elif att.status == 'Late' %}
+                                    <span class="badge badge-warning">Late</span>
+                                {% else %}
+                                    <span class="badge badge-primary">{{ att.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 10px 14px; color: #64748b; font-size: 12px;">
+                                {{ att.notes|default:"-" }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" style="padding: 30px; text-align: center; color: #94a3b8;">
+                                No attendance entries logged yet. Click "Log Attendance" to record.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL: ADD MARKS                           -->
+<!-- ========================================== -->
+<div class="modal-overlay" id="addMarksModal">
+    <div class="modal-box">
+        <form method="POST" action="{% url 'add_marks' student.student_id %}">
+            {% csrf_token %}
+            <input type="hidden" name="from_detail" value="1" />
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Record Marks for {{ student.name }}</span>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeModal('addMarksModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="subject">Subject / Course *</label>
+                    <input type="text" id="subject" name="subject" class="form-input" placeholder="e.g. Operating Systems" required />
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="exam_type">Assessment Term</label>
+                        <select id="exam_type" name="exam_type" class="form-select">
+                            <option value="Final Semester Exam">Final Semester Exam</option>
+                            <option value="Midterm Exam">Midterm Exam</option>
+                            <option value="Internal Assessment">Internal Assessment</option>
+                            <option value="Practical / Lab Test">Practical / Lab Test</option>
+                            <option value="Assignment / Project">Assignment / Project</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="exam_date">Assessment Date</label>
+                        <input type="date" id="exam_date" name="exam_date" value="{{ today_date }}" class="form-input" />
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="score">Score Obtained *</label>
+                        <input type="number" step="0.5" id="score" name="score" class="form-input" placeholder="e.g. 91" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="max_score">Maximum Score *</label>
+                        <input type="number" step="0.5" id="max_score" name="max_score" value="100" class="form-input" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="remarks">Teacher Remarks</label>
+                    <input type="text" id="remarks" name="remarks" class="form-input" placeholder="e.g. High proficiency in theory and concepts" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('addMarksModal')">Cancel</button>
+                <button type="submit" class="btn-primary">Save Mark Record</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL: RECORD ATTENDANCE                   -->
+<!-- ========================================== -->
+<div class="modal-overlay" id="recordAttendanceModal">
+    <div class="modal-box">
+        <form method="POST" action="{% url 'record_attendance' student.student_id %}">
+            {% csrf_token %}
+            <input type="hidden" name="from_detail" value="1" />
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>Log Attendance for {{ student.name }}</span>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeModal('recordAttendanceModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="attendance_date">Date *</label>
+                        <input type="date" id="attendance_date" name="attendance_date" value="{{ today_date }}" class="form-input" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="status">Status *</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Late">Late Arrival</option>
+                            <option value="Excused">Excused Leave</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="session_title">Session Title</label>
+                    <input type="text" id="session_title" name="session_title" value="Morning Session" class="form-input" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="notes">Notes / Observations</label>
+                    <input type="text" id="notes" name="notes" class="form-input" placeholder="e.g. Regular classroom attendance" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('recordAttendanceModal')">Cancel</button>
+                <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #059669, #10b981);">Save Attendance Entry</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL: EDIT PROFILE                        -->
+<!-- ========================================== -->
+<div class="modal-overlay" id="editProfileModal">
+    <div class="modal-box">
+        <form method="POST" action="{% url 'update_student' student.student_id %}">
+            {% csrf_token %}
+            <input type="hidden" name="from_detail" value="1" />
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>Edit Profile Details</span>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeModal('editProfileModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" name="name" value="{{ student.name }}" class="form-input" required />
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" name="email" value="{{ student.email }}" class="form-input" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" name="phone" value="{{ student.phone }}" class="form-input" />
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <select name="department" class="form-select">
+                            <option value="Computer Science" {% if student.department == 'Computer Science' %}selected{% endif %}>Computer Science</option>
+                            <option value="Information Technology" {% if student.department == 'Information Technology' %}selected{% endif %}>Information Technology</option>
+                            <option value="Mechanical Engineering" {% if student.department == 'Mechanical Engineering' %}selected{% endif %}>Mechanical Engineering</option>
+                            <option value="Electronics & Communication" {% if student.department == 'Electronics & Communication' %}selected{% endif %}>Electronics & Communication</option>
+                            <option value="Civil Engineering" {% if student.department == 'Civil Engineering' %}selected{% endif %}>Civil Engineering</option>
+                            <option value="Electrical Engineering" {% if student.department == 'Electrical Engineering' %}selected{% endif %}>Electrical Engineering</option>
+                            <option value="Business Administration" {% if student.department == 'Business Administration' %}selected{% endif %}>Business Administration</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Academic Year</label>
+                        <select name="year" class="form-select">
+                            <option value="1st Year" {% if student.year == '1st Year' %}selected{% endif %}>1st Year</option>
+                            <option value="2nd Year" {% if student.year == '2nd Year' %}selected{% endif %}>2nd Year</option>
+                            <option value="3rd Year" {% if student.year == '3rd Year' %}selected{% endif %}>3rd Year</option>
+                            <option value="4th Year" {% if student.year == '4th Year' %}selected{% endif %}>4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Enrollment Status</label>
+                        <select name="status" class="form-select">
+                            <option value="Active" {% if student.status == 'Active' %}selected{% endif %}>Active</option>
+                            <option value="Inactive" {% if student.status == 'Inactive' %}selected{% endif %}>Inactive</option>
+                            <option value="Graduated" {% if student.status == 'Graduated' %}selected{% endif %}>Graduated</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <select name="gender" class="form-select">
+                            <option value="Male" {% if student.gender == 'Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if student.gender == 'Female' %}selected{% endif %}>Female</option>
+                            <option value="Other" {% if student.gender == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <textarea name="address" class="form-textarea">{{ student.address }}</textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('editProfileModal')">Cancel</button>
+                <button type="submit" class="btn-primary">Update Profile</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

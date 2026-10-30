@@ -1,0 +1,92 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Faculty Login - Student Management System{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="width: 100%; max-width: 440px; margin: 0 auto; background: #ffffff; border-radius: var(--radius-2xl); padding: 36px; box-shadow: var(--shadow-card); border: 1px solid rgba(226, 232, 240, 0.9);">
+    <!-- Header -->
+    <div class="auth-header" style="text-align: center; margin-bottom: 22px;">
+        <div style="width: 48px; height: 48px; background: var(--primary-gradient); border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; color: #ffffff; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+            </svg>
+        </div>
+        <h1 class="auth-title" style="font-size: 22px; font-weight: 800; color: #0f172a;">Faculty & Admin Portal</h1>
+        <p class="auth-subtitle" style="font-size: 13.5px; color: #64748b; margin-top: 4px;">Sign in to manage student records, marks & attendance</p>
+    </div>
+
+    <!-- Segmented Toggle (Login / Signup) -->
+    <div class="auth-toggle" style="display: flex; background: var(--slate-100); border-radius: 12px; padding: 4px; margin-bottom: 20px;">
+        <a href="{% url 'login' %}" class="toggle-tab active" style="flex: 1; text-align: center; padding: 8px 0; font-size: 13.5px; font-weight: 700; border-radius: 9px; text-decoration: none; background: #0f172a; color: #ffffff;">Login</a>
+        <a href="{% url 'signup' %}" class="toggle-tab" style="flex: 1; text-align: center; padding: 8px 0; font-size: 13.5px; font-weight: 600; border-radius: 9px; text-decoration: none; color: #64748b;">Register</a>
+    </div>
+
+    <!-- Error/Alert Display -->
+    <div id="alert-container">
+        {% if error %}
+        <div class="alert-box alert-error" style="padding: 10px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; background: #fef2f2; border: 1px solid #fee2e2; color: #b91c1c; display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm" method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        <!-- Email Field -->
+        <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" for="email" style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">Institutional Email</label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                class="form-input" 
+                placeholder="faculty@campus.edu" 
+                value="{{ email_val }}" 
+                required 
+                autocomplete="email"
+                style="width: 100%; height: 44px; padding: 0 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; outline: none; font-size: 14px;"
+            />
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" for="password" style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">Password</label>
+            <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                class="form-input" 
+                placeholder="••••••••" 
+                required 
+                autocomplete="current-password"
+                style="width: 100%; height: 44px; padding: 0 14px; border-radius: 10px; border: 1.5px solid #cbd5e1; outline: none; font-size: 14px;"
+            />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-primary" style="width: 100%; height: 46px; font-size: 14.5px; margin-top: 6px;">
+            <span>Sign In to Dashboard &rarr;</span>
+        </button>
+    </form>
+
+    <!-- Faculty Default Credentials Hint -->
+    <div style="background: #f8fafc; border-radius: 12px; padding: 12px 14px; border: 1px solid #e2e8f0; font-size: 12px; color: #475569; margin-top: 20px; text-align: left; line-height: 1.6;">
+        <div style="font-weight: 700; color: #0f172a; margin-bottom: 2px;">
+            Default Faculty Credentials:
+        </div>
+        <div>Email: <code style="background: #eef2ff; color: #4338ca; padding: 1px 6px; border-radius: 4px; font-weight: 600;">admin@campus.edu</code></div>
+        <div>Password: <code style="background: #eef2ff; color: #4338ca; padding: 1px 6px; border-radius: 4px; font-weight: 600;">Password@123</code></div>
+    </div>
+
+    <div style="text-align: center; margin-top: 18px; font-size: 12.5px; color: #64748b;">
+        <span>New faculty or administrator? </span>
+        <a href="{% url 'signup' %}" style="color: #4f46e5; font-weight: 700; text-decoration: none;">Register account here &rarr;</a>
+    </div>
+</div>
+{% endblock %}
