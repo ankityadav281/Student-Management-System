@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎓 Student Management System (SMS)
 
 A full-featured **Student Management System** built to handle student records, academic course registrations, attendance tracking, and grading.
@@ -106,3 +107,7 @@ Access the web interface at `http://localhost:5000` (or `http://127.0.0.1:8000`)
 ## 📄 License
 
 This project is licensed under the MIT License.
+=======
+# Student-Management-System
+Student Management System
+>>>>>>> f8a665ef43cb8e42586085b564a3856ba2a9586a
