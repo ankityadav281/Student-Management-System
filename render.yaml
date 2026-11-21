@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: student-management-system
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn --chdir myproject myproject.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: MONGO_URI
+        sync: false
+      - key: MONGO_DB_NAME
+        value: student_management_db
