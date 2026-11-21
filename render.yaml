@@ -6,7 +6,7 @@ services:
     region: oregon
     branch: main
     buildCommand: "./build.sh"
-    startCommand: "gunicorn --chdir myproject myproject.wsgi:application"
+    startCommand: "gunicorn --chdir myproject --timeout 120 myproject.wsgi:application"
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.8

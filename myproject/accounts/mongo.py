@@ -15,8 +15,10 @@ from bson.objectid import ObjectId
 from django.conf import settings
 from django.contrib.auth.hashers import make_password, check_password
 
-# Mongo Client Singleton
+# Mongo Client Singleton & Status Cache
 _mongo_client = None
+_mongo_status_cache = None
+_mongo_status_cache_time = 0
 
 # Fallback JSON file path
 FALLBACK_FILE = Path(settings.BASE_DIR) / 'student_store_data.json'
@@ -26,8 +28,11 @@ def get_mongo_client():
     global _mongo_client
     if _mongo_client is None:
         try:
-            mongo_uri = getattr(settings, 'MONGO_URI', 'mongodb://localhost:27017/')
-            _mongo_client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
+            mongo_uri = getattr(settings, 'MONGO_URI', '').strip()
+            is_production = bool(os.getenv('RENDER') or os.getenv('RENDER_EXTERNAL_URL'))
+            if not mongo_uri or (is_production and ('localhost' in mongo_uri or '127.0.0.1' in mongo_uri)):
+                return None
+            _mongo_client = MongoClient(mongo_uri, serverSelectionTimeoutMS=1500)
         except Exception:
             _mongo_client = None
     return _mongo_client
@@ -41,14 +46,34 @@ def get_db():
     return client[db_name]
 
 def check_mongo_connection() -> bool:
-    """Check if MongoDB server is healthy and responding."""
+    """Check if MongoDB server is healthy and responding (cached for 30s to prevent request stalls)."""
+    global _mongo_status_cache, _mongo_status_cache_time
+    import time
+    now = time.time()
+    if _mongo_status_cache is not None and (now - _mongo_status_cache_time) < 30:
+        return _mongo_status_cache
+
     try:
+        mongo_uri = getattr(settings, 'MONGO_URI', '').strip()
+        is_production = bool(os.getenv('RENDER') or os.getenv('RENDER_EXTERNAL_URL'))
+        if not mongo_uri or (is_production and ('localhost' in mongo_uri or '127.0.0.1' in mongo_uri)):
+            _mongo_status_cache = False
+            _mongo_status_cache_time = now
+            return False
+
         client = get_mongo_client()
         if client is None:
+            _mongo_status_cache = False
+            _mongo_status_cache_time = now
             return False
+
         client.admin.command('ping')
+        _mongo_status_cache = True
+        _mongo_status_cache_time = now
         return True
     except Exception:
+        _mongo_status_cache = False
+        _mongo_status_cache_time = now
         return False
 
 # ==========================================
