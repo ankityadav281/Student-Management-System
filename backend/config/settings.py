@@ -132,6 +132,11 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = []
 
+FRONTEND_DIST = BASE_DIR.parent / 'frontend' / 'dist'
+if FRONTEND_DIST.exists():
+    STATICFILES_DIRS.append(FRONTEND_DIST)
+    WHITENOISE_ROOT = str(FRONTEND_DIST)
+
 try:
     import whitenoise
     STORAGES = {

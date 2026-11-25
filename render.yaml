@@ -6,7 +6,7 @@ services:
     region: oregon
     branch: main
     buildCommand: "./build.sh"
-    startCommand: "gunicorn --chdir myproject --timeout 120 myproject.wsgi:application"
+    startCommand: "gunicorn --chdir backend --timeout 120 config.wsgi:application"
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.8
@@ -14,7 +14,5 @@ services:
         generateValue: true
       - key: DEBUG
         value: "False"
-      - key: MONGO_URI
-        sync: false
-      - key: MONGO_DB_NAME
-        value: student_management_db
+      - key: ALLOWED_HOSTS
+        value: "*"
