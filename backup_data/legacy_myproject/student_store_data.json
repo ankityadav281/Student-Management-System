@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "_id": "8a791dcb-a073-482d-9047-1fc1265270c6",
+      "id": "8a791dcb-a073-482d-9047-1fc1265270c6",
+      "full_name": "Prof. Alex Mercer",
+      "email": "admin@campus.edu",
+      "password": "pbkdf2_sha256$1500000$Rjrm01QJFkPVUM08fBFK3k$eCqtojMf9P64IqUCA0f/6JZvELoMz02qTkeEK9rU0Uk=",
+      "role": "Academic Coordinator",
+      "created_at": "2026-11-21T13:02:08.800820+00:00",
+      "last_login": null,
+      "is_active": true
+    }
+  ],
+  "students": [],
+  "marks": [],
+  "attendance": []
+}

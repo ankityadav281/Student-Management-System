@@ -1,113 +1,179 @@
-<<<<<<< HEAD
-# 🎓 Student Management System (SMS)
+# Student Management System (SMS)
 
-A full-featured **Student Management System** built to handle student records, academic course registrations, attendance tracking, and grading.
-
----
-
-## 📋 Features
-
-- **User Authentication & Roles:** Secure access for Administrators, Teachers, and Students.
-- **Student Information System (SIS):** Create, view, update, and manage student personal and academic records.
-- **Course & Department Management:** Manage departments, assign teachers to subjects, and enroll students.
-- **Attendance Management:** Daily attendance recording with summary statistics and attendance reports.
-- **Grades & Report Cards:** Input exam/assignment marks and generate automated GPA/grade sheets.
-- **Fee Management:** Track student fee invoices and payment records.
+A complete, modern, full-stack Student Management System re-architected into cleanly separated **React.js Frontend** and **Django REST Framework Backend**.
 
 ---
 
-## 👥 User Roles & Permissions
+## Architectural Highlights
 
-| Role | Permissions |
-| :--- | :--- |
-| **Admin** | Full system control, manage teachers/students, configure courses, view audit logs. |
-| **Teacher** | Record attendance, enter grades, upload assignments, view assigned class lists. |
-| **Student** | View personal profile, registered courses, attendance percentage, and exam results. |
+- **Decoupled Architecture**: Independent frontend and backend directories communicating via REST APIs.
+- **Frontend**: React 19 + Vite + React Router DOM + Axios + Lucide Icons + Responsive Glassmorphism UI.
+- **Backend**: Python 3 + Django 5 + Django REST Framework + SQLite ORM + Token Authentication.
+- **Role-Based Access Control (RBAC)**: Dedicated interfaces and permissions for:
+  - **Academic Coordinator / Administrator**
+  - **Teacher / Faculty Member**
+  - **Student**
+- **Core Modules**:
+  1. Student Profile & Academic Management (CRUD, Search, Filters, CSV Export)
+  2. Department & Faculty Management
+  3. Course Catalogs & Student Course Enrollment
+  4. Daily & Batch Classroom Attendance Tracking (with `< 75%` attendance alert tags)
+  5. Examination Marks, Automatic GPA & Grade Calculation, and Official Printable Report Cards
+  6. Tuition Fee Invoices, Payment Tracking, and Financial Summaries
 
 ---
 
-## 🛠️ Tech Stack
+## Project Structure
 
-- **Backend:** Python (Django / Flask) or Node.js (Express)
-- **Frontend:** HTML5, CSS3, JavaScript / React / Bootstrap
-- **Database:** SQLite / MySQL / PostgreSQL
-- **Authentication:** Sessions / JWT
-
----
-
-## 📁 Project Structure
-
-```text
-STUDENT MANAGEMENT SYSTEM/
-├── backend/          # Server logic, routes, and models
-├── frontend/         # UI templates, styles, and scripts
-├── database/         # Database migrations and seed scripts
-├── .env.example      # Sample environment variables
-├── requirements.txt  # Dependencies (if Python) / package.json (if Node.js)
-└── README.md         # Documentation
+```
+STUDENT-MANAGEMENT-SYSTEM/
+│
+├── frontend/                     # React Frontend Application (Vite)
+│   ├── public/                   # Favicons and public assets
+│   ├── src/
+│   │   ├── assets/               # Brand assets
+│   │   ├── components/           # Reusable UI components
+│   │   ├── context/              # Authentication context
+│   │   ├── hooks/                # Custom hooks (useAuth)
+│   │   ├── layouts/              # MainLayout with sticky glass navbar & footer
+│   │   ├── pages/                # Route pages (auth, admin, teacher, student)
+│   │   ├── routes/               # AppRoutes and ProtectedRoute with RBAC
+│   │   ├── services/             # Modular Axios API services
+│   │   ├── styles/               # Global styles and design system
+│   │   ├── utils/                # Formatters, constants, helpers
+│   │   ├── App.jsx               # Root application router wrapper
+│   │   └── main.jsx              # React DOM entry point
+│   ├── package.json              # NPM dependencies
+│   ├── vite.config.js            # Vite configuration
+│   └── .env.example              # Frontend environment template
+│
+├── backend/                      # Django REST API Backend
+│   ├── config/                   # Django settings, WSGI, root URLs
+│   ├── apps/                     # Modular Django domain apps
+│   │   ├── accounts/             # Custom User, authentication, tokens
+│   │   ├── attendance/           # Daily & batch attendance tracking
+│   │   ├── courses/              # Courses, credits, teacher links, enrollments
+│   │   ├── departments/          # Academic departments
+│   │   ├── fees/                 # Tuition invoices, payments, financial summaries
+│   │   ├── grades/               # Examination marks, GPA computation, report cards
+│   │   ├── students/             # Student records, live metrics, CSV export
+│   │   └── teachers/             # Faculty profiles
+│   ├── manage.py                 # Django management CLI
+│   ├── requirements.txt          # Python dependencies
+│   ├── db.sqlite3                # Relational SQLite database
+│   ├── test_e2e.py               # E2E integration test suite
+│   └── .env.example              # Backend environment template
+│
+├── docs/                         # Technical documentation
+│   ├── architecture.md           # Architecture specification
+│   └── api_reference.md          # REST API endpoints reference
+│
+├── backup_data/                  # Safe backup of legacy database and JSON data
+├── .gitignore                    # Git rules for clean repository state
+└── README.md                     # Project documentation
 ```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 1. Prerequisites
-- Python 3.10+ or Node.js 18+
-- Git
-
-### 2. Installation
-
-1. Navigate to the project root directory:
-   ```bash
-   cd "d:\FINAL PROJECTS\STUDENT MANAGEMENT SYSTEM"
-   ```
-
-2. Install dependencies:
-   - **For Python:**
-     ```bash
-     python -m venv venv
-     .\venv\Scripts\activate
-     pip install -r requirements.txt
-     ```
-   - **For Node.js:**
-     ```bash
-     npm install
-     ```
-
-### 3. Setup Environment Variables
-Create a `.env` file in the project root:
-```ini
-PORT=5000
-SECRET_KEY=your_secret_key_here
-DB_NAME=student_management_db
-DB_USER=root
-DB_PASSWORD=your_password
-```
-
-### 4. Database Setup & Migrations
-- **Django:**
-  ```bash
-  python manage.py makemigrations
-  python manage.py migrate
-  python manage.py createsuperuser
-  ```
-- **Node.js / Prisma:**
-  ```bash
-  npx prisma migrate dev --name init
-  ```
-
-### 5. Run the Application
-- **Python:** `python manage.py runserver`
-- **Node.js:** `npm start` or `npm run dev`
-
-Access the web interface at `http://localhost:5000` (or `http://127.0.0.1:8000`).
+### Prerequisites
+- **Node.js**: v18.0.0 or higher
+- **npm**: v9.0.0 or higher
+- **Python**: v3.10 or higher
 
 ---
 
-## 📄 License
+### 1. Backend Setup (Django REST Framework)
 
-This project is licensed under the MIT License.
-=======
-# Student-Management-System
-Student Management System
->>>>>>> f8a665ef43cb8e42586085b564a3856ba2a9586a
+Open a terminal and navigate to the `backend/` directory:
+
+```bash
+cd backend
+
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+# On Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+# On Windows (CMD):
+venv\Scripts\activate.bat
+# On macOS / Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run migrations
+python manage.py migrate
+
+# (Optional) Seed initial demo records and default accounts
+python manage.py seed_data
+
+# Start the Django development server
+python manage.py runserver 127.0.0.1:8000
+```
+
+The Django REST API will be running at:
+- **API Root**: `http://127.0.0.1:8000/api/`
+- **Django Admin**: `http://127.0.0.1:8000/admin/`
+
+---
+
+### 2. Frontend Setup (React + Vite)
+
+Open a **separate terminal** and navigate to the `frontend/` directory:
+
+```bash
+cd frontend
+
+# Install NPM dependencies
+npm install
+
+# (Optional) Create .env from template if needed
+copy .env.example .env
+
+# Start the Vite development server
+npm run dev
+```
+
+The React frontend will be running at:
+- **React App**: `http://localhost:5173/`
+
+---
+
+## Default Login Credentials
+
+The system includes pre-configured demo accounts for all three roles:
+
+| Role | Email | Password | Access Capabilities |
+|---|---|---|---|
+| **Academic Coordinator / Admin** | `admin@campus.edu` | `Password@123` | Full administrative control, student CRUD, courses, departments, fee invoices, CSV export |
+| **Teacher / Faculty** | `teacher@campus.edu` | `Password@123` | Student directory, daily & batch attendance recording, examination marks & grading |
+| **Student** | `student@campus.edu` | `Password@123` | Student portal, live attendance rate, GPA & printable report card, fee invoice status |
+
+---
+
+## Automated Verification & Testing
+
+To run the automated 15-point end-to-end integration test suite:
+
+```bash
+cd backend
+.\venv\Scripts\python.exe test_e2e.py
+```
+
+To verify the React frontend production build:
+
+```bash
+cd frontend
+npm run build
+```
+
+---
+
+## Documentation
+
+- [Architecture & Design Specification](file:///d:/FINAL%20PROJECTS/STUDENT%20MANAGEMENT%20SYSTEM/docs/architecture.md)
+- [REST API Reference](file:///d:/FINAL%20PROJECTS/STUDENT%20MANAGEMENT%20SYSTEM/docs/api_reference.md)
