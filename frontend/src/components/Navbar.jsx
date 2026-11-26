@@ -61,23 +61,13 @@ const Navbar = ({ onToggleSidebar }) => {
               Student Management System
             </span>
             <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-text-secondary)', letterSpacing: '0.4px', textTransform: 'uppercase' }}>
-              Academic Portal • React + Django
+              Academic Portal
             </span>
           </div>
         </Link>
 
         {/* Public Navigation Links */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link 
-            to="/" 
-            className="btn btn-ghost"
-            style={{ 
-              color: isActive('/') ? 'var(--color-primary)' : 'var(--color-text-secondary)',
-              fontWeight: 700
-            }}
-          >
-            Overview
-          </Link>
           <Link to="/login" className="btn btn-secondary">
             <LogIn size={15} />
             <span>Sign In</span>
