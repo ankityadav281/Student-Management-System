@@ -1,11 +1,43 @@
 import React from 'react';
-import { AlertCircle, CheckCircle2, Info, X } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Info, AlertTriangle, X } from 'lucide-react';
 
 const AlertBanner = ({ type = 'error', message, onClose }) => {
   if (!message) return null;
 
-  const isError = type === 'error';
-  const isSuccess = type === 'success';
+  const getConfig = () => {
+    switch (type) {
+      case 'success':
+        return {
+          bg: 'var(--color-success-bg)',
+          border: 'rgba(22, 163, 106, 0.25)',
+          color: 'var(--color-success)',
+          Icon: CheckCircle2
+        };
+      case 'warning':
+        return {
+          bg: 'var(--color-warning-bg)',
+          border: 'rgba(229, 163, 35, 0.3)',
+          color: 'var(--color-warning)',
+          Icon: AlertTriangle
+        };
+      case 'info':
+        return {
+          bg: 'var(--color-info-bg)',
+          border: 'rgba(57, 120, 212, 0.25)',
+          color: 'var(--color-accent)',
+          Icon: Info
+        };
+      default: // error / danger
+        return {
+          bg: 'var(--color-danger-bg)',
+          border: 'rgba(220, 76, 76, 0.25)',
+          color: 'var(--color-danger)',
+          Icon: AlertCircle
+        };
+    }
+  };
+
+  const { bg, border, color, Icon } = getConfig();
 
   return (
     <div style={{
@@ -15,23 +47,29 @@ const AlertBanner = ({ type = 'error', message, onClose }) => {
       gap: '12px',
       padding: '12px 18px',
       borderRadius: 'var(--radius-md)',
-      background: isError ? '#fef2f2' : (isSuccess ? '#ecfdf5' : '#eff6ff'),
-      border: `1px solid ${isError ? '#fecaca' : (isSuccess ? '#a7f3d0' : '#bfdbfe')}`,
-      color: isError ? '#b91c1c' : (isSuccess ? '#047857' : '#1d4ed8'),
+      background: bg,
+      border: `1px solid ${border}`,
+      color: color,
       fontSize: '13.5px',
-      fontWeight: 500,
-      marginBottom: '18px'
+      fontWeight: 600,
+      marginBottom: '20px'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {isError && <AlertCircle size={17} />}
-        {isSuccess && <CheckCircle2 size={17} />}
-        {!isError && !isSuccess && <Info size={17} />}
+        <Icon size={18} />
         <span>{message}</span>
       </div>
       {onClose && (
         <button 
           onClick={onClose}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit' }}
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            cursor: 'pointer', 
+            color: 'inherit',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '4px'
+          }}
         >
           <X size={15} />
         </button>

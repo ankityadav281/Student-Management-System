@@ -170,10 +170,10 @@ const StudentManagement = () => {
         marginBottom: '24px'
       }}>
         <div>
-          <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
             Student Information System (SIS)
           </h1>
-          <p style={{ fontSize: '13.5px', color: 'var(--slate-500)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
             Manage academic profiles, course registrations, attendance, and exam marks
           </p>
         </div>
@@ -261,37 +261,37 @@ const StudentManagement = () => {
             <tbody>
               {students.map((s) => (
                 <tr key={s.id}>
-                  <td style={{ fontWeight: 800, color: 'var(--primary)' }}>
+                  <td style={{ fontWeight: 800, color: 'var(--color-primary)' }}>
                     {s.student_id}
                   </td>
                   <td>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontWeight: 700, color: '#0f172a' }}>{s.name}</span>
-                      <span style={{ fontSize: '12px', color: 'var(--slate-500)' }}>{s.email}</span>
+                      <span style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{s.name}</span>
+                      <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{s.email}</span>
                     </div>
                   </td>
                   <td>
                     <span style={{ fontSize: '13.5px', fontWeight: 500 }}>{s.department}</span>
                   </td>
                   <td>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--slate-600)' }}>{s.year}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{s.year}</span>
                   </td>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <span style={{
                         fontWeight: 800,
                         fontSize: '13.5px',
-                        color: s.attendance_pct < 75 ? '#dc2626' : '#059669'
+                        color: s.attendance_pct < 75 ? 'var(--color-danger)' : 'var(--color-success)'
                       }}>
                         {s.attendance_pct}%
                       </span>
                       {s.attendance_pct < 75 && s.total_attendance_records > 0 && (
-                        <AlertTriangle size={14} color="#dc2626" title="Attendance below 75% threshold" />
+                        <AlertTriangle size={14} color="var(--color-danger)" title="Attendance below 75% threshold" />
                       )}
                     </div>
                   </td>
                   <td>
-                    <span style={{ fontWeight: 800, fontSize: '13.5px' }}>
+                    <span style={{ fontWeight: 800, fontSize: '13.5px', color: 'var(--color-text-primary)' }}>
                       {s.average_marks}%
                     </span>
                   </td>
@@ -498,15 +498,15 @@ const StudentManagement = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              background: '#f8fafc',
+              background: 'var(--color-hover)',
               padding: '16px 20px',
-              borderRadius: '14px',
-              border: '1px solid #e2e8f0',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--color-border)',
               marginBottom: '20px'
             }}>
               <div>
-                <h4 style={{ fontSize: '18px', fontWeight: 800 }}>{detailStudent.name}</h4>
-                <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: 'var(--slate-600)', marginTop: '4px' }}>
+                <h4 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>{detailStudent.name}</h4>
+                <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
                   <span>{detailStudent.email}</span>
                   <span>•</span>
                   <span>{detailStudent.phone || 'No phone'}</span>
@@ -522,31 +522,31 @@ const StudentManagement = () => {
             {/* Performance Overview Cards */}
             <div className="grid-3" style={{ marginBottom: '24px' }}>
               <div className="card" style={{ padding: '16px' }}>
-                <span style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 600 }}>ATTENDANCE RATE</span>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: detailStudent.attendance_pct < 75 ? '#dc2626' : '#059669', marginTop: '4px' }}>
+                <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontWeight: 600 }}>ATTENDANCE RATE</span>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: detailStudent.attendance_pct < 75 ? 'var(--color-danger)' : 'var(--color-success)', marginTop: '4px' }}>
                   {detailStudent.attendance_pct}%
                 </div>
-                <span style={{ fontSize: '12px', color: 'var(--slate-500)' }}>
+                <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
                   {detailStudent.present_count} / {detailStudent.total_attendance_records} classes
                 </span>
               </div>
 
               <div className="card" style={{ padding: '16px' }}>
-                <span style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 600 }}>CUMULATIVE AVERAGE</span>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--primary)', marginTop: '4px' }}>
+                <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontWeight: 600 }}>CUMULATIVE AVERAGE</span>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-primary)', marginTop: '4px' }}>
                   {detailStudent.average_marks}%
                 </div>
-                <span style={{ fontSize: '12px', color: 'var(--slate-500)' }}>
+                <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
                   Across {detailStudent.marks_count} recorded exams
                 </span>
               </div>
 
               <div className="card" style={{ padding: '16px' }}>
-                <span style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 600 }}>ACADEMIC STANDING</span>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: detailStudent.at_risk ? '#dc2626' : '#059669', marginTop: '4px' }}>
+                <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)', fontWeight: 600 }}>ACADEMIC STANDING</span>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: detailStudent.at_risk ? 'var(--color-danger)' : 'var(--color-success)', marginTop: '4px' }}>
                   {detailStudent.at_risk ? 'At Risk' : 'Good Standing'}
                 </div>
-                <span style={{ fontSize: '12px', color: 'var(--slate-500)' }}>
+                <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
                   {detailStudent.at_risk ? 'Requires intervention' : 'Meets all criteria'}
                 </span>
               </div>

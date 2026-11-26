@@ -7,7 +7,7 @@ import { useAuth } from '../../hooks/useAuth';
 import Modal from '../../components/Modal';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import AlertBanner from '../../components/AlertBanner';
-import { BookOpen, Plus, Users, UserPlus, Trash2, Edit } from 'lucide-react';
+import { BookOpen, Plus, Users, Trash2, UserPlus, CheckCircle2 } from 'lucide-react';
 
 const CourseManagement = () => {
   const { isAdmin, isTeacher } = useAuth();
@@ -32,25 +32,24 @@ const CourseManagement = () => {
     credits: 3,
     semester: 'Semester 1',
     teacher: '',
-    description: ''
+    description: '',
   });
   const [saving, setSaving] = useState(false);
 
   const loadData = async () => {
-    setLoading(true);
     try {
-      const [cData, dData, tData, sData] = await Promise.all([
+      const [coursesData, deptsData, teachersData, studentsData] = await Promise.all([
         courseService.getAll(),
         departmentService.getAll(),
         teacherService.getAll(),
         studentService.getAll()
       ]);
-      setCourses(Array.isArray(cData) ? cData : []);
-      setDepartments(Array.isArray(dData) ? dData : []);
-      setTeachers(Array.isArray(tData) ? tData : []);
-      setStudents(Array.isArray(sData) ? sData : []);
+      setCourses(Array.isArray(coursesData) ? coursesData : []);
+      setDepartments(Array.isArray(deptsData) ? deptsData : []);
+      setTeachers(Array.isArray(teachersData) ? teachersData : []);
+      setStudents(Array.isArray(studentsData) ? studentsData : []);
     } catch (err) {
-      setBanner({ type: 'error', message: 'Failed to load courses.' });
+      setBanner({ type: 'error', message: 'Failed to load course catalogue data.' });
     } finally {
       setLoading(false);
     }
@@ -114,10 +113,10 @@ const CourseManagement = () => {
         marginBottom: '24px'
       }}>
         <div>
-          <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
             Course & Curriculum Management
           </h1>
-          <p style={{ fontSize: '13.5px', color: 'var(--slate-500)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
             Manage course offerings, credit allocations, faculty assignments, and student enrollments
           </p>
         </div>
@@ -150,15 +149,15 @@ const CourseManagement = () => {
             <tbody>
               {courses.map((c) => (
                 <tr key={c.id}>
-                  <td style={{ fontWeight: 800, color: 'var(--primary)' }}>{c.code}</td>
-                  <td style={{ fontWeight: 700 }}>{c.title}</td>
+                  <td style={{ fontWeight: 800, color: 'var(--color-primary)' }}>{c.code}</td>
+                  <td style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{c.title}</td>
                   <td>{c.department_name || 'General'}</td>
                   <td><span className="badge badge-active">{c.credits} Credits</span></td>
                   <td>{c.semester}</td>
-                  <td>{c.teacher_name || <span style={{ color: 'var(--slate-400)' }}>Unassigned</span>}</td>
+                  <td>{c.teacher_name || <span style={{ color: 'var(--color-text-muted)' }}>Unassigned</span>}</td>
                   <td>
-                    <span style={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                      <Users size={14} color="var(--primary)" />
+                    <span style={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'var(--color-text-primary)' }}>
+                      <Users size={14} color="var(--color-primary)" />
                       {c.enrolled_students_count}
                     </span>
                   </td>
@@ -190,7 +189,7 @@ const CourseManagement = () => {
               ))}
               {courses.length === 0 && (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', padding: '36px', color: 'var(--slate-500)' }}>
+                  <td colSpan={8} style={{ textAlign: 'center', padding: '36px', color: 'var(--color-text-muted)' }}>
                     No courses found. Click "Create New Course" to add to catalog.
                   </td>
                 </tr>
@@ -293,7 +292,7 @@ const CourseManagement = () => {
           <div className="form-group">
             <label className="form-label">Course Description</label>
             <textarea 
-              className="form-textarea"
+              className="form-textarea" 
               rows={2}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}

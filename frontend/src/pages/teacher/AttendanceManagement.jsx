@@ -159,10 +159,10 @@ const AttendanceManagement = () => {
         marginBottom: '24px'
       }}>
         <div>
-          <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
             Classroom Attendance Management
           </h1>
-          <p style={{ fontSize: '13.5px', color: 'var(--slate-500)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
             Daily attendance logging, batch submission, and compliance tracking
           </p>
         </div>
@@ -282,14 +282,14 @@ const AttendanceManagement = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: '#f8fafc',
+            background: 'var(--color-hover)',
             padding: '14px 18px',
-            borderRadius: '12px',
-            border: '1px solid #e2e8f0',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--color-border)',
             marginBottom: '18px'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontWeight: 700, fontSize: '14px' }}>Session Date:</span>
+              <span style={{ fontWeight: 700, fontSize: '14px', color: 'var(--color-text-primary)' }}>Session Date:</span>
               <input 
                 type="date"
                 className="form-input"
@@ -301,12 +301,12 @@ const AttendanceManagement = () => {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '12.5px', color: 'var(--slate-500)', fontWeight: 600 }}>Mark All:</span>
+              <span style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)', fontWeight: 600 }}>Mark All:</span>
               <button 
                 type="button" 
                 onClick={() => handleMarkAll('Present')}
                 className="btn btn-secondary"
-                style={{ padding: '4px 12px', fontSize: '12px', color: '#059669' }}
+                style={{ padding: '4px 12px', fontSize: '12px', color: 'var(--color-success)' }}
               >
                 Present
               </button>
@@ -314,7 +314,7 @@ const AttendanceManagement = () => {
                 type="button" 
                 onClick={() => handleMarkAll('Absent')}
                 className="btn btn-secondary"
-                style={{ padding: '4px 12px', fontSize: '12px', color: '#dc2626' }}
+                style={{ padding: '4px 12px', fontSize: '12px', color: 'var(--color-danger)' }}
               >
                 Absent
               </button>
@@ -359,9 +359,9 @@ const AttendanceManagement = () => {
                                 fontSize: '12px',
                                 fontWeight: 700,
                                 cursor: 'pointer',
-                                borderColor: currentStatus === st ? 'transparent' : 'var(--slate-200)',
-                                background: currentStatus === st ? (st === 'Present' ? '#10b981' : (st === 'Absent' ? '#ef4444' : '#f59e0b')) : '#ffffff',
-                                color: currentStatus === st ? '#ffffff' : 'var(--slate-700)',
+                                borderColor: currentStatus === st ? 'transparent' : 'var(--color-border)',
+                                background: currentStatus === st ? (st === 'Present' ? 'var(--color-success)' : (st === 'Absent' ? 'var(--color-danger)' : 'var(--color-warning)')) : 'var(--color-surface)',
+                                color: currentStatus === st ? '#ffffff' : 'var(--color-text-primary)',
                                 transition: 'all 0.15s'
                               }}
                             >

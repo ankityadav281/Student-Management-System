@@ -15,13 +15,12 @@ import {
   Building2, 
   BookOpen, 
   CreditCard, 
-  UserCheck,
   ChevronRight,
   ExternalLink
 } from 'lucide-react';
 
 const AdminDashboard = () => {
-  const { user, isAdmin, isTeacher } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentStudents, setRecentStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -62,11 +61,11 @@ const AdminDashboard = () => {
         marginBottom: '28px'
       }}>
         <div>
-          <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#0f172a' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--color-primary-dark)', letterSpacing: '-0.3px' }}>
             Academic Coordinator Dashboard
           </h1>
-          <p style={{ fontSize: '14px', color: 'var(--slate-500)', marginTop: '4px' }}>
-            Welcome back, <strong>{user?.full_name}</strong>. Here is the active campus overview.
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+            Welcome back, <strong>{user?.full_name}</strong>. University administration overview.
           </p>
         </div>
 
@@ -78,7 +77,7 @@ const AdminDashboard = () => {
             className="btn btn-secondary"
           >
             <Download size={15} />
-            <span>Export CSV Report</span>
+            <span>Export CSV</span>
           </a>
           <Link to="/students" className="btn btn-primary">
             <Plus size={16} />
@@ -108,7 +107,7 @@ const AdminDashboard = () => {
           value={`${stats?.class_average_marks || 0}%`}
           subtitle="Cumulative exam performance"
           icon={Award}
-          color="info"
+          color="indigo"
         />
         <StatCard 
           title="At-Risk Alerts"
@@ -121,97 +120,97 @@ const AdminDashboard = () => {
 
       {/* Quick Navigation Cards */}
       <div style={{ marginBottom: '36px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>
-          Management Modules
+        <h3 style={{ fontSize: '17px', fontWeight: 700, color: 'var(--color-primary-dark)', marginBottom: '16px' }}>
+          Academic Management Modules
         </h3>
         <div className="grid-3">
           <Link to="/students" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#eef2ff', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'var(--color-primary-light)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Users size={20} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '16px', fontWeight: 700 }}>Student Directory</h4>
-                  <span style={{ fontSize: '12.5px', color: 'var(--slate-500)' }}>Profiles, enrollments & CRUD</span>
+                  <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>Student Directory</h4>
+                  <span style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)' }}>Profiles, enrollments & CRUD</span>
                 </div>
               </div>
-              <ChevronRight size={18} color="var(--slate-400)" />
+              <ChevronRight size={18} color="var(--color-text-muted)" />
             </div>
           </Link>
 
           <Link to="/attendance" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#ecfdf5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'var(--color-success-bg)', color: 'var(--color-success)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <CalendarCheck size={20} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '16px', fontWeight: 700 }}>Attendance Tracker</h4>
-                  <span style={{ fontSize: '12.5px', color: 'var(--slate-500)' }}>Daily & batch classroom attendance</span>
+                  <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>Attendance Tracker</h4>
+                  <span style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)' }}>Daily & batch classroom attendance</span>
                 </div>
               </div>
-              <ChevronRight size={18} color="var(--slate-400)" />
+              <ChevronRight size={18} color="var(--color-text-muted)" />
             </div>
           </Link>
 
           <Link to="/grades" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#f0f9ff', color: '#0284c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'rgba(81, 70, 165, 0.08)', color: 'var(--color-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Award size={20} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '16px', fontWeight: 700 }}>Examinations & Grades</h4>
-                  <span style={{ fontSize: '12.5px', color: 'var(--slate-500)' }}>GPA, exam marks & report cards</span>
+                  <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>Examinations & Grades</h4>
+                  <span style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)' }}>GPA, exam marks & report cards</span>
                 </div>
               </div>
-              <ChevronRight size={18} color="var(--slate-400)" />
+              <ChevronRight size={18} color="var(--color-text-muted)" />
             </div>
           </Link>
 
           <Link to="/courses" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#f5f3ff', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'var(--color-info-bg)', color: 'var(--color-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <BookOpen size={20} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '16px', fontWeight: 700 }}>Courses & Curriculum</h4>
-                  <span style={{ fontSize: '12.5px', color: 'var(--slate-500)' }}>Subjects, credits & enrollments</span>
+                  <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>Courses & Curriculum</h4>
+                  <span style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)' }}>Subjects, credits & enrollments</span>
                 </div>
               </div>
-              <ChevronRight size={18} color="var(--slate-400)" />
+              <ChevronRight size={18} color="var(--color-text-muted)" />
             </div>
           </Link>
 
           <Link to="/departments" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#fffbeb', color: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'rgba(20, 45, 78, 0.08)', color: 'var(--color-primary-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Building2 size={20} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '16px', fontWeight: 700 }}>Departments</h4>
-                  <span style={{ fontSize: '12.5px', color: 'var(--slate-500)' }}>Academic branches & heads</span>
+                  <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>Departments</h4>
+                  <span style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)' }}>Academic branches & heads</span>
                 </div>
               </div>
-              <ChevronRight size={18} color="var(--slate-400)" />
+              <ChevronRight size={18} color="var(--color-text-muted)" />
             </div>
           </Link>
 
           <Link to="/fees" className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#ecfeff', color: '#0891b2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'var(--color-warning-bg)', color: 'var(--color-warning)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <CreditCard size={20} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '16px', fontWeight: 700 }}>Tuition & Fee Records</h4>
-                  <span style={{ fontSize: '12.5px', color: 'var(--slate-500)' }}>Invoices, payments & balances</span>
+                  <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text-primary)' }}>Tuition & Fee Records</h4>
+                  <span style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)' }}>Invoices, payments & balances</span>
                 </div>
               </div>
-              <ChevronRight size={18} color="var(--slate-400)" />
+              <ChevronRight size={18} color="var(--color-text-muted)" />
             </div>
           </Link>
         </div>
@@ -220,17 +219,17 @@ const AdminDashboard = () => {
       {/* Recent Enrolled Students Preview */}
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         <div style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid var(--slate-200)',
+          padding: '18px 24px',
+          borderBottom: '1px solid var(--color-border)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
         }}>
           <div>
-            <h3 style={{ fontSize: '17px', fontWeight: 800 }}>Recent Student Registrations</h3>
-            <span style={{ fontSize: '13px', color: 'var(--slate-500)' }}>Latest student records in the system</span>
+            <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--color-primary-dark)' }}>Recent Student Registrations</h3>
+            <span style={{ fontSize: '12.5px', color: 'var(--color-text-secondary)' }}>Latest student records in the system</span>
           </div>
-          <Link to="/students" style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Link to="/students" style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>View All Students</span>
             <ExternalLink size={14} />
           </Link>
@@ -252,17 +251,17 @@ const AdminDashboard = () => {
             <tbody>
               {recentStudents.map((s) => (
                 <tr key={s.id}>
-                  <td style={{ fontWeight: 700, color: 'var(--primary)' }}>{s.student_id}</td>
-                  <td style={{ fontWeight: 600 }}>{s.name}</td>
+                  <td style={{ fontWeight: 800, color: 'var(--color-primary)' }}>{s.student_id}</td>
+                  <td style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{s.name}</td>
                   <td>{s.department}</td>
                   <td>{s.year}</td>
                   <td>
-                    <span style={{ fontWeight: 700, color: s.attendance_pct < 75 ? '#dc2626' : '#059669' }}>
+                    <span style={{ fontWeight: 700, color: s.attendance_pct < 75 ? 'var(--color-danger)' : 'var(--color-success)' }}>
                       {s.attendance_pct}%
                     </span>
                   </td>
                   <td>
-                    <span style={{ fontWeight: 700 }}>{s.average_marks}%</span>
+                    <span style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{s.average_marks}%</span>
                   </td>
                   <td>
                     <span className={`badge badge-${s.status?.toLowerCase() || 'active'}`}>
@@ -273,7 +272,7 @@ const AdminDashboard = () => {
               ))}
               {recentStudents.length === 0 && (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', padding: '32px', color: 'var(--slate-500)' }}>
+                  <td colSpan={7} style={{ textAlign: 'center', padding: '32px', color: 'var(--color-text-muted)' }}>
                     No student records found. Click "Manage Students" to add or seed demo data.
                   </td>
                 </tr>

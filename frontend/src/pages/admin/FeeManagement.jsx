@@ -6,7 +6,16 @@ import StatCard from '../../components/StatCard';
 import Modal from '../../components/Modal';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import AlertBanner from '../../components/AlertBanner';
-import { CreditCard, Plus, DollarSign, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { 
+  CreditCard, 
+  Plus, 
+  Search, 
+  Clock, 
+  CheckCircle2, 
+  AlertCircle, 
+  Calendar,
+  DollarSign
+} from 'lucide-react';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 
 const FeeManagement = () => {
@@ -17,15 +26,19 @@ const FeeManagement = () => {
   const [loading, setLoading] = useState(true);
   const [banner, setBanner] = useState(null);
 
-  // New Invoice Modal
+  // Filters
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [search, setSearch] = useState('');
+
+  // Generate Invoice Modal
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [invoiceForm, setInvoiceForm] = useState({
     student: '',
     invoice_no: '',
-    title: 'Semester 5 Tuition Fee',
-    academic_term: 'Academic Year 2024-2025',
+    title: '',
+    academic_term: 'Fall 2026',
     total_amount: '',
-    due_date: new Date().toISOString().split('T')[0]
+    due_date: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
   });
 
   // Record Payment Modal
@@ -33,18 +46,22 @@ const FeeManagement = () => {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [paymentForm, setPaymentForm] = useState({
     amount: '',
-    payment_date: new Date().toISOString().split('T')[0],
     payment_method: 'Net Banking',
     transaction_id: '',
-    notes: ''
+    payment_date: new Date().toISOString().split('T')[0],
+    notes: '',
   });
+
   const [saving, setSaving] = useState(false);
 
   const loadData = async () => {
-    setLoading(true);
     try {
+      const params = {};
+      if (statusFilter !== 'All') params.status = statusFilter;
+      if (search) params.search = search;
+
       const [invData, sumData, stuData] = await Promise.all([
-        feeService.getInvoices(),
+        feeService.getInvoices(params),
         feeService.getSummary(),
         studentService.getAll()
       ]);
@@ -52,7 +69,7 @@ const FeeManagement = () => {
       setSummary(sumData);
       setStudents(Array.isArray(stuData) ? stuData : []);
     } catch (err) {
-      setBanner({ type: 'error', message: 'Failed to load fee records.' });
+      setBanner({ type: 'error', message: 'Failed to retrieve fee records.' });
     } finally {
       setLoading(false);
     }
@@ -60,16 +77,13 @@ const FeeManagement = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [statusFilter]);
 
   const handleOpenAddInvoice = () => {
+    const invNo = `INV-2026-${String(invoices.length + 101).padStart(4, '0')}`;
     setInvoiceForm({
-      student: '',
-      invoice_no: `INV-2024-${String(invoices.length + 1).padStart(3, '0')}`,
-      title: 'Semester Tuition Fee',
-      academic_term: 'Academic Year 2024-2025',
-      total_amount: '',
-      due_date: new Date().toISOString().split('T')[0]
+      ...invoiceForm,
+      invoice_no: invNo
     });
     setIsInvoiceModalOpen(true);
   };
@@ -79,24 +93,24 @@ const FeeManagement = () => {
     setSaving(true);
     try {
       await feeService.createInvoice(invoiceForm);
-      setBanner({ type: 'success', message: 'Fee invoice created successfully.' });
+      setBanner({ type: 'success', message: 'Fee invoice issued successfully.' });
       setIsInvoiceModalOpen(false);
       loadData();
     } catch (err) {
-      setBanner({ type: 'error', message: 'Failed to create fee invoice.' });
+      setBanner({ type: 'error', message: 'Failed to issue fee invoice.' });
     } finally {
       setSaving(false);
     }
   };
 
-  const handleOpenPayment = (inv) => {
-    setSelectedInvoice(inv);
+  const handleOpenPayment = (invoice) => {
+    setSelectedInvoice(invoice);
     setPaymentForm({
-      amount: inv.balance_amount || inv.total_amount,
-      payment_date: new Date().toISOString().split('T')[0],
+      amount: invoice.balance_amount,
       payment_method: 'Net Banking',
-      transaction_id: `TXN-${Date.now().toString().slice(-6)}`,
-      notes: 'Fee settlement'
+      transaction_id: `TXN-${Math.floor(100000 + Math.random() * 900000)}`,
+      payment_date: new Date().toISOString().split('T')[0],
+      notes: '',
     });
     setIsPaymentModalOpen(true);
   };
@@ -133,10 +147,10 @@ const FeeManagement = () => {
         marginBottom: '24px'
       }}>
         <div>
-          <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
             Tuition & Fee Records Management
           </h1>
-          <p style={{ fontSize: '13.5px', color: 'var(--slate-500)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
             Issue fee invoices, monitor outstanding balances, and track payment histories
           </p>
         </div>
@@ -181,9 +195,44 @@ const FeeManagement = () => {
         />
       </div>
 
+      {/* Search & Filters */}
+      <div className="card" style={{ padding: '16px 20px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <div style={{ minWidth: '180px' }}>
+            <select 
+              className="form-select"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="All">All Invoice Statuses</option>
+              <option value="Paid">Paid</option>
+              <option value="Partial">Partial</option>
+              <option value="Pending">Pending</option>
+              <option value="Overdue">Overdue</option>
+            </select>
+          </div>
+
+          <div style={{ flex: '1 1 240px', position: 'relative' }}>
+            <input 
+              type="text"
+              className="form-input"
+              placeholder="Search by invoice number or student..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ paddingLeft: '38px' }}
+            />
+            <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
+          </div>
+
+          <button onClick={loadData} className="btn btn-secondary">
+            Filter
+          </button>
+        </div>
+      </div>
+
       {/* Invoices Table */}
       {loading ? (
-        <LoadingSpinner text="Retrieving financial records..." />
+        <LoadingSpinner text="Retrieving fee invoices..." />
       ) : (
         <div className="table-container">
           <table className="custom-table">
@@ -192,9 +241,9 @@ const FeeManagement = () => {
                 <th>Invoice No</th>
                 <th>Student</th>
                 <th>Title / Description</th>
-                <th>Total</th>
-                <th>Paid</th>
-                <th>Outstanding</th>
+                <th>Billed Amount</th>
+                <th>Paid Amount</th>
+                <th>Balance Due</th>
                 <th>Due Date</th>
                 <th>Status</th>
                 <th style={{ textAlign: 'right' }}>Actions</th>
@@ -203,17 +252,17 @@ const FeeManagement = () => {
             <tbody>
               {invoices.map((inv) => (
                 <tr key={inv.id}>
-                  <td style={{ fontWeight: 800, color: 'var(--primary)' }}>{inv.invoice_no}</td>
+                  <td style={{ fontWeight: 800, color: 'var(--color-primary)' }}>{inv.invoice_no}</td>
                   <td>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontWeight: 700 }}>{inv.student_name}</span>
-                      <span style={{ fontSize: '12px', color: 'var(--slate-500)' }}>{inv.student_id_code}</span>
+                      <span style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{inv.student_name}</span>
+                      <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{inv.student_id_code}</span>
                     </div>
                   </td>
                   <td style={{ fontWeight: 600 }}>{inv.title}</td>
                   <td><strong>{formatCurrency(inv.total_amount)}</strong></td>
-                  <td style={{ color: '#059669', fontWeight: 700 }}>{formatCurrency(inv.paid_amount)}</td>
-                  <td style={{ color: inv.balance_amount > 0 ? '#dc2626' : '#059669', fontWeight: 700 }}>
+                  <td style={{ color: 'var(--color-success)', fontWeight: 700 }}>{formatCurrency(inv.paid_amount)}</td>
+                  <td style={{ color: inv.balance_amount > 0 ? 'var(--color-danger)' : 'var(--color-success)', fontWeight: 700 }}>
                     {formatCurrency(inv.balance_amount)}
                   </td>
                   <td>{formatDate(inv.due_date)}</td>
@@ -227,7 +276,7 @@ const FeeManagement = () => {
                       <button 
                         onClick={() => handleOpenPayment(inv)}
                         className="btn btn-secondary"
-                        style={{ padding: '6px 12px', fontSize: '12px', color: '#059669' }}
+                        style={{ padding: '6px 12px', fontSize: '12px', color: 'var(--color-success)' }}
                       >
                         Record Payment
                       </button>
@@ -237,7 +286,7 @@ const FeeManagement = () => {
               ))}
               {invoices.length === 0 && (
                 <tr>
-                  <td colSpan={9} style={{ textAlign: 'center', padding: '36px', color: 'var(--slate-500)' }}>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: '36px', color: 'var(--color-text-muted)' }}>
                     No fee invoices generated yet. Click "Generate Fee Invoice" to issue student fee billing.
                   </td>
                 </tr>
@@ -350,11 +399,11 @@ const FeeManagement = () => {
         maxWidth="500px"
       >
         <form onSubmit={handleSavePayment}>
-          <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '10px', marginBottom: '16px', fontSize: '13px' }}>
+          <div style={{ background: 'var(--color-hover)', padding: '14px', borderRadius: 'var(--radius-md)', marginBottom: '16px', fontSize: '13px' }}>
             <div>Student: <strong>{selectedInvoice?.student_name}</strong></div>
             <div>Invoice Title: <strong>{selectedInvoice?.title}</strong></div>
             <div>Total Fee: <strong>{formatCurrency(selectedInvoice?.total_amount)}</strong></div>
-            <div>Outstanding: <strong style={{ color: '#dc2626' }}>{formatCurrency(selectedInvoice?.balance_amount)}</strong></div>
+            <div>Outstanding: <strong style={{ color: 'var(--color-danger)' }}>{formatCurrency(selectedInvoice?.balance_amount)}</strong></div>
           </div>
 
           <div className="grid-2">

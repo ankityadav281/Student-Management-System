@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { studentService } from '../../services/studentService';
 import { gradeService } from '../../services/gradeService';
+import { studentService } from '../../services/studentService';
+import { useAuth } from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { Award, Printer, CheckCircle2 } from 'lucide-react';
-import { getGradeBadgeColor } from '../../utils/formatters';
+import AlertBanner from '../../components/AlertBanner';
+import { Award, Printer, ArrowLeft } from 'lucide-react';
+import { getGradeBadgeColor, formatDate } from '../../utils/formatters';
+import { Link } from 'react-router-dom';
 
 const StudentReportCard = () => {
   const { user } = useAuth();
@@ -12,32 +14,37 @@ const StudentReportCard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadReportCard = async () => {
+    const loadReport = async () => {
       try {
-        const allStudents = await studentService.getAll();
-        const matched = allStudents.find(s => s.email === user?.email) || allStudents[0];
-        if (matched) {
-          const data = await gradeService.getReportCard(matched.id);
+        const students = await studentService.getAll();
+        const found = Array.isArray(students) ? students[0] : null;
+        if (found) {
+          const data = await gradeService.getReportCard(found.student_id);
           setReportCard(data);
         }
       } catch (err) {
-        console.warn('Report card fetch error:', err);
+        console.warn('Report card fetch notice:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadReportCard();
+    loadReport();
   }, [user]);
 
-  if (loading) return <LoadingSpinner text="Generating Official Academic Report Card..." />;
+  if (loading) return <LoadingSpinner text="Generating Official Academic Transcript..." />;
 
   return (
-    <div style={{ maxWidth: '840px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+    <div style={{ maxWidth: '880px', margin: '0 auto' }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '24px'
+      }}>
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 800 }}>Official Academic Report Card</h1>
-          <p style={{ fontSize: '13.5px', color: 'var(--slate-500)' }}>Certified Semester Academic Evaluation</p>
+          <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>Academic Report Card</h1>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)' }}>Certified Semester Academic Evaluation</p>
         </div>
         <button onClick={() => window.print()} className="btn btn-primary">
           <Printer size={15} />
@@ -50,13 +57,13 @@ const StudentReportCard = () => {
         <div style={{
           textAlign: 'center',
           paddingBottom: '24px',
-          borderBottom: '2px solid var(--slate-200)',
+          borderBottom: '2px solid var(--color-border)',
           marginBottom: '28px'
         }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 900, color: 'var(--color-primary-dark)', letterSpacing: '-0.5px' }}>
             STUDENT MANAGEMENT SYSTEM
           </h2>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--primary)', letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px' }}>
+          <div style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--color-primary)', letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px' }}>
             ACADEMIC PERFORMANCE & TRANSCRIPT RECORD
           </div>
         </div>
@@ -66,12 +73,13 @@ const StudentReportCard = () => {
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
           gap: '14px',
-          background: '#f8fafc',
+          background: 'var(--color-hover)',
           padding: '20px',
-          borderRadius: '12px',
-          border: '1px solid #e2e8f0',
+          borderRadius: 'var(--radius-md)',
+          border: '1px solid var(--color-border)',
           fontSize: '13.5px',
-          marginBottom: '28px'
+          marginBottom: '28px',
+          color: 'var(--color-text-primary)'
         }}>
           <div>Student Name: <strong>{reportCard?.student?.name}</strong></div>
           <div>Student ID: <strong>{reportCard?.student?.student_id}</strong></div>
@@ -95,7 +103,7 @@ const StudentReportCard = () => {
             <tbody>
               {reportCard?.records?.map((r) => (
                 <tr key={r.id}>
-                  <td style={{ fontWeight: 700 }}>{r.subject}</td>
+                  <td style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>{r.subject}</td>
                   <td>{r.exam_type}</td>
                   <td>{r.marks_obtained} / {r.max_marks}</td>
                   <td style={{ fontWeight: 700 }}>{r.percentage}%</td>
@@ -113,46 +121,44 @@ const StudentReportCard = () => {
 
         {/* Evaluation Summary Strip */}
         <div style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+          background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)',
           color: '#ffffff',
-          borderRadius: '14px',
+          borderRadius: 'var(--radius-lg)',
           padding: '20px 24px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '16px'
+          gap: '16px',
+          boxShadow: 'var(--shadow-card)'
         }}>
           <div>
-            <div style={{ fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
-              FINAL ASSESSMENT
-            </div>
-            <div style={{ fontSize: '20px', fontWeight: 800, marginTop: '2px' }}>
-              Cumulative Average: {reportCard?.summary?.cumulative_percentage}%
-            </div>
-            <div style={{ fontSize: '13px', color: '#94a3b8', marginTop: '2px' }}>
-              Attendance Compliance: {reportCard?.summary?.attendance_pct}%
+            <div style={{ fontSize: '11px', color: '#CBD5E1', textTransform: 'uppercase', fontWeight: 700 }}>SEMESTER CGPA</div>
+            <div style={{ fontSize: '32px', fontWeight: 900, color: 'var(--color-primary-light)' }}>
+              {reportCard?.summary?.cgpa || '0.0'}
             </div>
           </div>
-
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
-              CUMULATIVE CGPA
+          <div>
+            <div style={{ fontSize: '11px', color: '#CBD5E1', textTransform: 'uppercase', fontWeight: 700 }}>OVERALL GRADE</div>
+            <div style={{ fontSize: '24px', fontWeight: 800 }}>
+              {reportCard?.summary?.overall_grade || 'N/A'}
             </div>
-            <div style={{ fontSize: '32px', fontWeight: 900, color: '#38bdf8' }}>
-              {reportCard?.summary?.cgpa}
-            </div>
-            <span style={{
-              display: 'inline-block',
-              padding: '2px 10px',
-              borderRadius: '6px',
-              background: reportCard?.summary?.result_status === 'PASS' ? '#065f46' : '#991b1b',
-              color: '#ffffff',
-              fontSize: '12px',
-              fontWeight: 800
+          </div>
+          <div>
+            <div style={{ fontSize: '11px', color: '#CBD5E1', textTransform: 'uppercase', fontWeight: 700 }}>RESULT STATUS</div>
+            <div style={{ 
+              fontSize: '22px', 
+              fontWeight: 800, 
+              color: reportCard?.summary?.result_status === 'PASS' ? '#86EFAC' : '#FCA5A5' 
             }}>
-              {reportCard?.summary?.result_status}
-            </span>
+              {reportCard?.summary?.result_status || 'PASS'}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '11px', color: '#CBD5E1', textTransform: 'uppercase', fontWeight: 700 }}>ATTENDANCE</div>
+            <div style={{ fontSize: '22px', fontWeight: 800 }}>
+              {reportCard?.summary?.attendance_pct || 0}%
+            </div>
           </div>
         </div>
       </div>

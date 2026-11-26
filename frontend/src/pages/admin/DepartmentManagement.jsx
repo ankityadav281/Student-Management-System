@@ -12,12 +12,17 @@ const DepartmentManagement = () => {
   const [loading, setLoading] = useState(true);
   const [banner, setBanner] = useState(null);
 
+  // Modal & Form state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form, setForm] = useState({ code: '', name: '', description: '', head_name: '' });
+  const [form, setForm] = useState({
+    name: '',
+    code: '',
+    description: '',
+    head_name: '',
+  });
   const [saving, setSaving] = useState(false);
 
   const loadDepartments = async () => {
-    setLoading(true);
     try {
       const data = await departmentService.getAll();
       setDepartments(Array.isArray(data) ? data : []);
@@ -37,9 +42,9 @@ const DepartmentManagement = () => {
     setSaving(true);
     try {
       await departmentService.create(form);
-      setBanner({ type: 'success', message: 'Department created successfully.' });
+      setBanner({ type: 'success', message: 'Department registered successfully.' });
       setIsModalOpen(false);
-      setForm({ code: '', name: '', description: '', head_name: '' });
+      setForm({ name: '', code: '', description: '', head_name: '' });
       loadDepartments();
     } catch (err) {
       setBanner({ type: 'error', message: 'Failed to create department.' });
@@ -72,10 +77,10 @@ const DepartmentManagement = () => {
         marginBottom: '24px'
       }}>
         <div>
-          <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
             Academic Departments
           </h1>
-          <p style={{ fontSize: '13.5px', color: 'var(--slate-500)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
             Manage institutional faculties, department codes, and department leadership
           </p>
         </div>
@@ -96,19 +101,26 @@ const DepartmentManagement = () => {
             <div key={d.id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{
-                  padding: '6px 12px',
-                  borderRadius: '8px',
-                  background: '#eef2ff',
-                  color: 'var(--primary)',
+                  padding: '5px 12px',
+                  borderRadius: 'var(--radius-sm)',
+                  background: 'var(--color-primary-light)',
+                  color: 'var(--color-primary)',
                   fontWeight: 800,
-                  fontSize: '13px'
+                  fontSize: '12.5px',
+                  border: '1px solid rgba(36, 87, 166, 0.2)'
                 }}>
                   {d.code}
                 </div>
                 {isAdmin && (
                   <button 
                     onClick={() => handleDelete(d.id)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626' }}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      cursor: 'pointer', 
+                      color: 'var(--color-danger)',
+                      padding: '4px'
+                    }}
                     title="Delete"
                   >
                     <Trash2 size={16} />
@@ -117,13 +129,13 @@ const DepartmentManagement = () => {
               </div>
 
               <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>{d.name}</h3>
-                <span style={{ fontSize: '13px', color: 'var(--slate-500)' }}>
-                  Head: <strong>{d.head_name || 'Dr. Department Chair'}</strong>
+                <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>{d.name}</h3>
+                <span style={{ fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+                  Chair: <strong>{d.head_name || 'Dr. Department Chair'}</strong>
                 </span>
               </div>
 
-              <p style={{ fontSize: '13px', color: 'var(--slate-600)', lineHeight: 1.5, flex: 1 }}>
+              <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: 1.5, flex: 1 }}>
                 {d.description || 'Offers undergraduate and postgraduate degree specializations.'}
               </p>
 
@@ -132,16 +144,16 @@ const DepartmentManagement = () => {
                 alignItems: 'center',
                 gap: '16px',
                 paddingTop: '12px',
-                borderTop: '1px solid #f1f5f9',
+                borderTop: '1px solid var(--color-border)',
                 fontSize: '12.5px',
-                color: 'var(--slate-600)'
+                color: 'var(--color-text-secondary)'
               }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <Users size={14} color="var(--primary)" />
+                  <Users size={14} color="var(--color-primary)" />
                   <strong>{d.student_count || 0}</strong> Students
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <BookOpen size={14} color="#059669" />
+                  <BookOpen size={14} color="var(--color-success)" />
                   <strong>{d.course_count || 0}</strong> Courses
                 </span>
               </div>

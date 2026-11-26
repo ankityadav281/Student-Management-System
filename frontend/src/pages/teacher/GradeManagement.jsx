@@ -133,10 +133,10 @@ const GradeManagement = () => {
         marginBottom: '24px'
       }}>
         <div>
-          <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
             Academic Examination & Grade Records
           </h1>
-          <p style={{ fontSize: '13.5px', color: 'var(--slate-500)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
             Record test scores, calculate GPA/CGPA, and issue verified academic report cards
           </p>
         </div>
@@ -378,31 +378,32 @@ const GradeManagement = () => {
           <div>
             {/* Header Strip */}
             <div style={{
-              background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+              background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)',
               color: '#ffffff',
               padding: '24px',
-              borderRadius: '16px',
-              marginBottom: '20px'
+              borderRadius: 'var(--radius-lg)',
+              marginBottom: '20px',
+              boxShadow: 'var(--shadow-card)'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
                   <h3 style={{ fontSize: '20px', fontWeight: 800 }}>{reportCardData.student.name}</h3>
-                  <div style={{ fontSize: '13px', color: '#94a3b8', marginTop: '4px' }}>
+                  <div style={{ fontSize: '13px', color: '#CBD5E1', marginTop: '4px' }}>
                     Student ID: <span style={{ color: '#ffffff', fontWeight: 700 }}>{reportCardData.student.student_id}</span> • {reportCardData.student.department} • {reportCardData.student.year}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>CUMULATIVE CGPA</div>
-                  <div style={{ fontSize: '32px', fontWeight: 900, color: '#38bdf8' }}>
+                  <div style={{ fontSize: '11px', color: '#CBD5E1', textTransform: 'uppercase', fontWeight: 700 }}>CUMULATIVE CGPA</div>
+                  <div style={{ fontSize: '32px', fontWeight: 900, color: 'var(--color-primary-light)' }}>
                     {reportCardData.summary?.cgpa || '0.0'}
                   </div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '24px', marginTop: '18px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.1)', fontSize: '13px' }}>
+              <div style={{ display: 'flex', gap: '24px', marginTop: '18px', paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.15)', fontSize: '13px' }}>
                 <div>Overall Percentage: <strong>{reportCardData.summary?.cumulative_percentage}%</strong></div>
                 <div>Overall Grade: <strong>{reportCardData.summary?.overall_grade}</strong></div>
-                <div>Status: <strong style={{ color: reportCardData.summary?.result_status === 'PASS' ? '#34d399' : '#f87171' }}>{reportCardData.summary?.result_status}</strong></div>
+                <div>Status: <strong style={{ color: reportCardData.summary?.result_status === 'PASS' ? '#86EFAC' : '#FCA5A5' }}>{reportCardData.summary?.result_status}</strong></div>
                 <div>Attendance: <strong>{reportCardData.summary?.attendance_pct}%</strong></div>
               </div>
             </div>

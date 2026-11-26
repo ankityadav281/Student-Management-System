@@ -41,8 +41,8 @@ const Login = () => {
           <div style={{
             width: '48px',
             height: '48px',
-            borderRadius: '14px',
-            background: 'var(--primary-gradient)',
+            borderRadius: '12px',
+            background: 'var(--color-primary)',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -52,10 +52,10 @@ const Login = () => {
           }}>
             <GraduationCap size={26} />
           </div>
-          <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--dark)' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
             Sign In to Portal
           </h2>
-          <p style={{ fontSize: '13.5px', color: 'var(--slate-500)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
             Academic Coordinator • Teacher • Student Access
           </p>
         </div>
@@ -68,7 +68,7 @@ const Login = () => {
             <input 
               type="email" 
               className="form-input" 
-              placeholder="user@campus.edu"
+              placeholder="e.g. admin@campus.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required 
@@ -76,11 +76,16 @@ const Login = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label className="form-label">Password</label>
+              <span style={{ fontSize: '12px', color: 'var(--color-primary)', cursor: 'pointer', fontWeight: 600 }}>
+                Default: Password@123
+              </span>
+            </div>
             <input 
               type="password" 
               className="form-input" 
-              placeholder="••••••••"
+              placeholder="••••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required 
@@ -89,11 +94,11 @@ const Login = () => {
 
           <button 
             type="submit" 
-            className="btn btn-primary" 
-            style={{ width: '100%', marginTop: '10px', height: '44px' }}
             disabled={submitting}
+            className="btn btn-primary"
+            style={{ width: '100%', marginTop: '10px', padding: '12px', fontSize: '15px' }}
           >
-            <span>{submitting ? 'Authenticating...' : 'Sign In to Dashboard'}</span>
+            <span>{submitting ? 'Authenticating...' : 'Sign In'}</span>
             <ArrowRight size={16} />
           </button>
         </form>
@@ -102,14 +107,14 @@ const Login = () => {
         <div style={{
           marginTop: '28px',
           padding: '16px',
-          borderRadius: '12px',
-          background: '#f8fafc',
-          border: '1px solid #e2e8f0',
+          borderRadius: 'var(--radius-md)',
+          background: 'var(--color-hover)',
+          border: '1px solid var(--color-border)',
           fontSize: '12.5px',
-          color: 'var(--slate-600)'
+          color: 'var(--color-text-secondary)'
         }}>
-          <div style={{ fontWeight: 700, color: 'var(--slate-800)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <ShieldCheck size={15} color="var(--primary)" />
+          <div style={{ fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <ShieldCheck size={15} color="var(--color-primary)" />
             <span>Quick Demo Credentials:</span>
           </div>
 
@@ -120,16 +125,16 @@ const Login = () => {
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '6px 10px',
+                padding: '7px 10px',
                 borderRadius: '6px',
-                border: '1px solid #e2e8f0',
-                background: '#ffffff',
+                border: '1px solid var(--color-border)',
+                background: 'var(--color-surface)',
                 cursor: 'pointer',
                 fontSize: '12px'
               }}
             >
-              <span style={{ fontWeight: 600 }}>Academic Coordinator:</span>
-              <span style={{ color: 'var(--primary)' }}>admin@campus.edu</span>
+              <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>Academic Coordinator:</span>
+              <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>admin@campus.edu</span>
             </button>
 
             <button 
@@ -138,16 +143,16 @@ const Login = () => {
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '6px 10px',
+                padding: '7px 10px',
                 borderRadius: '6px',
-                border: '1px solid #e2e8f0',
-                background: '#ffffff',
+                border: '1px solid var(--color-border)',
+                background: 'var(--color-surface)',
                 cursor: 'pointer',
                 fontSize: '12px'
               }}
             >
-              <span style={{ fontWeight: 600 }}>Faculty / Teacher:</span>
-              <span style={{ color: 'var(--primary)' }}>teacher@campus.edu</span>
+              <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>Faculty / Teacher:</span>
+              <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>teacher@campus.edu</span>
             </button>
 
             <button 
@@ -156,23 +161,23 @@ const Login = () => {
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '6px 10px',
+                padding: '7px 10px',
                 borderRadius: '6px',
-                border: '1px solid #e2e8f0',
-                background: '#ffffff',
+                border: '1px solid var(--color-border)',
+                background: 'var(--color-surface)',
                 cursor: 'pointer',
                 fontSize: '12px'
               }}
             >
-              <span style={{ fontWeight: 600 }}>Student Account:</span>
-              <span style={{ color: 'var(--primary)' }}>student@campus.edu</span>
+              <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>Student Account:</span>
+              <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>student@campus.edu</span>
             </button>
           </div>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '13px', color: 'var(--slate-500)' }}>
+        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
           Don't have an account?{' '}
-          <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>
+          <Link to="/register" style={{ color: 'var(--color-primary)', fontWeight: 700, textDecoration: 'none' }}>
             Register here &rarr;
           </Link>
         </div>

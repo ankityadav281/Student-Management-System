@@ -43,8 +43,8 @@ const Register = () => {
           <div style={{
             width: '48px',
             height: '48px',
-            borderRadius: '14px',
-            background: 'var(--primary-gradient)',
+            borderRadius: '12px',
+            background: 'var(--color-primary)',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -54,10 +54,10 @@ const Register = () => {
           }}>
             <GraduationCap size={26} />
           </div>
-          <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--dark)' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
             Register New Account
           </h2>
-          <p style={{ fontSize: '13.5px', color: 'var(--slate-500)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
             Create an academic administrator, teacher, or student profile
           </p>
         </div>
@@ -79,12 +79,12 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Email Address *</label>
+            <label className="form-label">Academic Email *</label>
             <input 
               type="email" 
               name="email"
               className="form-input" 
-              placeholder="jane.doe@campus.edu"
+              placeholder="faculty@campus.edu"
               value={formData.email}
               onChange={handleChange}
               required 
@@ -92,23 +92,23 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Account Role *</label>
+            <label className="form-label">Role Designation *</label>
             <select 
-              name="role" 
+              name="role"
               className="form-select"
               value={formData.role}
               onChange={handleChange}
             >
+              <option value="teacher">Faculty Member / Teacher</option>
               <option value="admin">Academic Coordinator / Admin</option>
-              <option value="teacher">Teacher / Faculty</option>
-              <option value="student">Student</option>
+              <option value="student">Student Account</option>
             </select>
           </div>
 
           <div className="form-group">
-            <label className="form-label">Phone Number</label>
+            <label className="form-label">Contact Phone</label>
             <input 
-              type="text" 
+              type="tel" 
               name="phone"
               className="form-input" 
               placeholder="+91 98765 43210"
@@ -123,29 +123,28 @@ const Register = () => {
               type="password" 
               name="password"
               className="form-input" 
-              placeholder="Minimum 6 characters"
+              placeholder="Minimum 8 characters"
               value={formData.password}
               onChange={handleChange}
               required 
-              minLength={6}
             />
           </div>
 
           <button 
             type="submit" 
-            className="btn btn-primary" 
-            style={{ width: '100%', marginTop: '12px', height: '44px' }}
             disabled={submitting}
+            className="btn btn-primary"
+            style={{ width: '100%', marginTop: '10px', padding: '12px', fontSize: '15px' }}
           >
-            <span>{submitting ? 'Registering...' : 'Create Account'}</span>
+            <span>{submitting ? 'Creating Profile...' : 'Complete Registration'}</span>
             <ArrowRight size={16} />
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '13px', color: 'var(--slate-500)' }}>
+        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
           Already have an account?{' '}
-          <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>
-            Sign In &rarr;
+          <Link to="/login" style={{ color: 'var(--color-primary)', fontWeight: 700, textDecoration: 'none' }}>
+            Sign in &rarr;
           </Link>
         </div>
       </div>

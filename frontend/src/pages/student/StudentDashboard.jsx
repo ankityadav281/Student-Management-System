@@ -6,8 +6,19 @@ import { gradeService } from '../../services/gradeService';
 import { feeService } from '../../services/feeService';
 import StatCard from '../../components/StatCard';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { Award, CalendarCheck, CreditCard, BookOpen, CheckCircle2 } from 'lucide-react';
-import { formatCurrency } from '../../utils/formatters';
+import AlertBanner from '../../components/AlertBanner';
+import { 
+  Award, 
+  CalendarCheck, 
+  CreditCard, 
+  BookOpen, 
+  User, 
+  Clock, 
+  AlertTriangle,
+  ArrowRight,
+  GraduationCap
+} from 'lucide-react';
+import { formatCurrency, formatDate, getGradeBadgeColor } from '../../utils/formatters';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -19,21 +30,21 @@ const StudentDashboard = () => {
   useEffect(() => {
     const loadStudentData = async () => {
       try {
-        // Find matching student by email or default first student
-        const allStudents = await studentService.getAll();
-        const matched = allStudents.find(s => s.email === user?.email) || allStudents[0];
-        if (matched) {
-          const [details, rCard, invs] = await Promise.all([
-            studentService.getById(matched.id),
-            gradeService.getReportCard(matched.id),
-            feeService.getInvoices({ student: matched.id })
+        const studentsList = await studentService.getAll();
+        const found = Array.isArray(studentsList) ? studentsList[0] : null;
+
+        if (found) {
+          const [detailData, reportData, invData] = await Promise.all([
+            studentService.getById(found.id),
+            gradeService.getReportCard(found.student_id),
+            feeService.getInvoices({ student: found.id })
           ]);
-          setStudent(details);
-          setReportCard(rCard);
-          setInvoices(Array.isArray(invs) ? invs : []);
+          setStudent(detailData);
+          setReportCard(reportData);
+          setInvoices(Array.isArray(invData) ? invData : []);
         }
       } catch (err) {
-        console.warn('Student portal loading error:', err);
+        console.warn('Student dashboard error:', err);
       } finally {
         setLoading(false);
       }
@@ -48,30 +59,38 @@ const StudentDashboard = () => {
 
   return (
     <div>
-      {/* Student Welcome Banner */}
+      {/* Student Welcome Banner (Deep Navy + Academic Blue visual identity) */}
       <div style={{
-        background: 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)',
-        borderRadius: '20px',
+        background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)',
+        borderRadius: 'var(--radius-xl)',
         color: '#ffffff',
         padding: '30px 36px',
         marginBottom: '28px',
-        boxShadow: '0 12px 28px -6px rgba(79, 70, 229, 0.35)'
+        boxShadow: 'var(--shadow-card)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <span style={{ fontSize: '13px', fontWeight: 700, background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '9999px', textTransform: 'uppercase' }}>
+            <span style={{ 
+              fontSize: '12.5px', 
+              fontWeight: 700, 
+              background: 'rgba(255,255,255,0.15)', 
+              padding: '4px 12px', 
+              borderRadius: 'var(--radius-full)', 
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px' 
+            }}>
               Student Academic Profile
             </span>
-            <h1 style={{ fontSize: '30px', fontWeight: 800, marginTop: '8px' }}>
+            <h1 style={{ fontSize: '28px', fontWeight: 800, marginTop: '8px' }}>
               Welcome, {student?.name || user?.full_name}!
             </h1>
-            <p style={{ fontSize: '14px', color: '#e0e7ff', marginTop: '4px' }}>
-              Student ID: <strong>{student?.student_id || 'SMS-2024-001'}</strong> • {student?.department} • {student?.year}
+            <p style={{ fontSize: '14px', color: '#CBD5E1', marginTop: '4px' }}>
+              Student ID: <strong style={{ color: '#ffffff' }}>{student?.student_id || 'SMS-2024-001'}</strong> • {student?.department} • {student?.year}
             </p>
           </div>
 
           <div style={{ display: 'flex', gap: '10px' }}>
-            <Link to="/student/report-card" className="btn btn-secondary" style={{ background: '#ffffff', color: 'var(--primary)' }}>
+            <Link to="/student/report-card" className="btn btn-secondary">
               <Award size={15} />
               <span>View Report Card</span>
             </Link>
@@ -93,7 +112,7 @@ const StudentDashboard = () => {
           value={reportCard?.summary?.cgpa || '0.0'}
           subtitle={`Overall Grade: ${reportCard?.summary?.overall_grade || 'N/A'}`}
           icon={Award}
-          color="info"
+          color="indigo"
         />
         <StatCard 
           title="Tuition Balance"
@@ -109,8 +128,8 @@ const StudentDashboard = () => {
         {/* Enrolled Courses Card */}
         <div className="card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <BookOpen size={20} color="var(--primary)" />
-            <h3 style={{ fontSize: '17px', fontWeight: 700 }}>Enrolled Academic Courses</h3>
+            <BookOpen size={20} color="var(--color-primary)" />
+            <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--color-primary-dark)' }}>Enrolled Academic Courses</h3>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -120,56 +139,61 @@ const StudentDashboard = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '12px 14px',
-                borderRadius: '10px',
-                background: '#f8fafc',
-                border: '1px solid #e2e8f0'
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--color-hover)',
+                border: '1px solid var(--color-border)'
               }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '14px', color: '#0f172a' }}>{c.course_title}</div>
-                  <div style={{ fontSize: '12px', color: 'var(--slate-500)' }}>{c.course_code}</div>
+                  <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--color-text-primary)' }}>{c.course_title}</div>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{c.course_code}</div>
                 </div>
                 <span className="badge badge-active">{c.status}</span>
               </div>
             ))}
             {(!student?.courses || student.courses.length === 0) && (
-              <div style={{ color: 'var(--slate-500)', fontSize: '13px', padding: '16px 0' }}>
+              <div style={{ color: 'var(--color-text-muted)', fontSize: '13px', padding: '16px 0' }}>
                 No active course enrollments.
               </div>
             )}
           </div>
         </div>
 
-        {/* Latest Marks Card */}
+        {/* Examination Scores Card */}
         <div className="card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <Award size={20} color="#059669" />
-            <h3 style={{ fontSize: '17px', fontWeight: 700 }}>Recent Examination Marks</h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Award size={20} color="var(--color-secondary)" />
+              <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--color-primary-dark)' }}>Recent Examination Results</h3>
+            </div>
+            <Link to="/student/report-card" style={{ fontSize: '12.5px', color: 'var(--color-primary)', fontWeight: 700, textDecoration: 'none' }}>
+              Full Report &rarr;
+            </Link>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {student?.marks?.slice(0, 4).map((m) => (
-              <div key={m.id} style={{
+            {reportCard?.records?.slice(0, 4).map((r) => (
+              <div key={r.id} style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '12px 14px',
-                borderRadius: '10px',
-                background: '#f8fafc',
-                border: '1px solid #e2e8f0'
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--color-hover)',
+                border: '1px solid var(--color-border)'
               }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '14px', color: '#0f172a' }}>{m.subject}</div>
-                  <div style={{ fontSize: '12px', color: 'var(--slate-500)' }}>{m.exam_type}</div>
+                  <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--color-text-primary)' }}>{r.subject}</div>
+                  <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{r.exam_type}</div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontWeight: 800, fontSize: '14px', color: 'var(--primary)' }}>{m.marks_obtained} / {m.max_marks}</div>
-                  <span className="badge badge-active">{m.grade}</span>
+                  <div style={{ fontWeight: 800, fontSize: '14px', color: 'var(--color-text-primary)' }}>{r.percentage}%</div>
+                  <span className={`badge ${getGradeBadgeColor(r.grade)}`}>{r.grade}</span>
                 </div>
               </div>
             ))}
-            {(!student?.marks || student.marks.length === 0) && (
-              <div style={{ color: 'var(--slate-500)', fontSize: '13px', padding: '16px 0' }}>
-                No exam marks published yet.
+            {(!reportCard?.records || reportCard.records.length === 0) && (
+              <div style={{ color: 'var(--color-text-muted)', fontSize: '13px', padding: '16px 0' }}>
+                No examination records published yet.
               </div>
             )}
           </div>

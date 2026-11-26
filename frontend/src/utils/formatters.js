@@ -28,11 +28,12 @@ export const getGradeBadgeColor = (grade) => {
       return 'badge-active';
     case 'B+':
     case 'B':
-      return 'badge-graduated';
+      return 'badge-info';
+    case 'C+':
     case 'C':
     case 'D':
-      return 'badge-late';
+      return 'badge-pending';
     default:
-      return 'badge-absent';
+      return 'badge-rejected';
   }
 };
