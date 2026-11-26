@@ -52,29 +52,13 @@ const Home = () => {
         color: 'var(--color-primary-dark)',
         lineHeight: 1.2,
         letterSpacing: '-1px',
-        marginBottom: '16px'
+        marginBottom: '32px'
       }}>
         Student Management System<br />
         <span style={{ color: 'var(--color-primary)' }}>
           Academic Administration, Marks & Attendance Portal
         </span>
       </h1>
-
-      {/* Subtitle / Overview */}
-      <div style={{
-        maxWidth: '760px',
-        margin: '0 auto 36px auto',
-        background: 'var(--color-surface)',
-        padding: '20px 26px',
-        borderRadius: 'var(--radius-lg)',
-        border: '1px solid var(--color-border)',
-        boxShadow: 'var(--shadow-subtle)',
-        textAlign: 'left'
-      }}>
-        <p style={{ fontSize: '14.5px', color: 'var(--color-text-secondary)', lineHeight: 1.6, fontWeight: 500 }}>
-          <strong style={{ color: 'var(--color-text-primary)' }}>Enterprise Academic Suite:</strong> A decoupled full-stack university management platform designed with React and Django REST Framework. Streamlines student registrations, classroom attendance tracking, examination grading, course enrollments, and tuition fee billing with strict role-based access for Administrators, Faculty, and Students.
-        </p>
-      </div>
 
       {/* Call to Actions */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', marginBottom: '48px', flexWrap: 'wrap' }}>
