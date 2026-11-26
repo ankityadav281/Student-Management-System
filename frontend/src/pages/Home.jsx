@@ -115,7 +115,7 @@ const Home = () => {
           </h2>
         </div>
 
-        <div className="grid-3" style={{ gap: '22px' }}>
+        <div className="grid-3x2">
           <div className="card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
               <ShieldCheck color="var(--color-primary)" size={22} />
