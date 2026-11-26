@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import AlertBanner from '../../components/AlertBanner';
-import { LogIn, GraduationCap, ArrowRight, ShieldCheck } from 'lucide-react';
+import { GraduationCap, ArrowRight } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -27,11 +27,6 @@ const Login = () => {
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleQuickLogin = (quickEmail, quickPassword) => {
-    setEmail(quickEmail);
-    setPassword(quickPassword);
   };
 
   return (
@@ -76,12 +71,7 @@ const Login = () => {
           </div>
 
           <div className="form-group">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label className="form-label">Password</label>
-              <span style={{ fontSize: '12px', color: 'var(--color-primary)', cursor: 'pointer', fontWeight: 600 }}>
-                Default: Password@123
-              </span>
-            </div>
+            <label className="form-label">Password</label>
             <input 
               type="password" 
               className="form-input" 
@@ -103,79 +93,7 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Demo Fast Fill Buttons */}
-        <div style={{
-          marginTop: '28px',
-          padding: '16px',
-          borderRadius: 'var(--radius-md)',
-          background: 'var(--color-hover)',
-          border: '1px solid var(--color-border)',
-          fontSize: '12.5px',
-          color: 'var(--color-text-secondary)'
-        }}>
-          <div style={{ fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <ShieldCheck size={15} color="var(--color-primary)" />
-            <span>Quick Demo Credentials:</span>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <button 
-              type="button" 
-              onClick={() => handleQuickLogin('admin@campus.edu', 'Password@123')}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '7px 10px',
-                borderRadius: '6px',
-                border: '1px solid var(--color-border)',
-                background: 'var(--color-surface)',
-                cursor: 'pointer',
-                fontSize: '12px'
-              }}
-            >
-              <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>Academic Coordinator:</span>
-              <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>admin@campus.edu</span>
-            </button>
-
-            <button 
-              type="button" 
-              onClick={() => handleQuickLogin('teacher@campus.edu', 'Password@123')}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '7px 10px',
-                borderRadius: '6px',
-                border: '1px solid var(--color-border)',
-                background: 'var(--color-surface)',
-                cursor: 'pointer',
-                fontSize: '12px'
-              }}
-            >
-              <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>Faculty / Teacher:</span>
-              <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>teacher@campus.edu</span>
-            </button>
-
-            <button 
-              type="button" 
-              onClick={() => handleQuickLogin('student@campus.edu', 'Password@123')}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '7px 10px',
-                borderRadius: '6px',
-                border: '1px solid var(--color-border)',
-                background: 'var(--color-surface)',
-                cursor: 'pointer',
-                fontSize: '12px'
-              }}
-            >
-              <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>Student Account:</span>
-              <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}>student@campus.edu</span>
-            </button>
-          </div>
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
+        <div style={{ textAlign: 'center', marginTop: '24px', fontSize: '13px', color: 'var(--color-text-secondary)' }}>
           Don't have an account?{' '}
           <Link to="/register" style={{ color: 'var(--color-primary)', fontWeight: 700, textDecoration: 'none' }}>
             Register here &rarr;
