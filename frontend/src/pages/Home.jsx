@@ -1,17 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { studentService } from '../services/studentService';
-import StatCard from '../components/StatCard';
-import AlertBanner from '../components/AlertBanner';
 import { 
   Users, 
   CalendarCheck, 
   Award, 
-  AlertTriangle, 
   ArrowRight, 
   PlusCircle, 
-  Sparkles, 
   ShieldCheck, 
   BookOpen,
   CreditCard,
@@ -21,48 +16,9 @@ import {
 
 const Home = () => {
   const { isAuthenticated, user, isAdmin } = useAuth();
-  const [stats, setStats] = useState({
-    total_students: 0,
-    average_attendance: 0,
-    class_average_marks: 0,
-    at_risk_count: 0,
-    active_students: 0,
-    top_department: 'Computer Science'
-  });
-  const [loading, setLoading] = useState(true);
-  const [banner, setBanner] = useState(null);
-
-  const fetchStats = async () => {
-    try {
-      const data = await studentService.getStats();
-      setStats(data);
-    } catch (err) {
-      console.warn('Stats fetch notice:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const handleSeedDemo = async () => {
-    setLoading(true);
-    try {
-      const res = await studentService.seedDemo();
-      setBanner({ type: 'success', message: res.message || 'Demo data loaded successfully!' });
-      await fetchStats();
-    } catch (err) {
-      setBanner({ type: 'error', message: 'Failed to seed demo data: ' + (err.response?.data?.error || err.message) });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div style={{ maxWidth: '1180px', margin: '0 auto', textAlign: 'center', paddingBottom: '60px' }}>
-      {banner && <AlertBanner type={banner.type} message={banner.message} onClose={() => setBanner(null)} />}
 
       {/* Hero Badge */}
       <div style={{
@@ -146,48 +102,6 @@ const Home = () => {
             </Link>
           </>
         )}
-
-        <button 
-          onClick={handleSeedDemo} 
-          disabled={loading}
-          className="btn btn-secondary"
-          style={{ padding: '11px 20px', fontSize: '14px' }}
-        >
-          <Sparkles size={16} color="var(--color-primary)" />
-          <span>{loading ? 'Populating...' : 'Seed Sample Database'}</span>
-        </button>
-      </div>
-
-      {/* Live KPI Statistics Cards (Section 6) */}
-      <div className="grid-4" style={{ marginBottom: '56px', textAlign: 'left' }}>
-        <StatCard 
-          title="Total Students" 
-          value={stats.total_students} 
-          subtitle={`${stats.active_students || stats.total_students} Active in Directory`}
-          icon={Users}
-          color="primary"
-        />
-        <StatCard 
-          title="Average Attendance" 
-          value={`${stats.average_attendance}%`} 
-          subtitle="Tracked across all courses"
-          icon={CalendarCheck}
-          color="success"
-        />
-        <StatCard 
-          title="Class Average Marks" 
-          value={`${stats.class_average_marks}%`} 
-          subtitle="Cumulative exam performance"
-          icon={Award}
-          color="indigo"
-        />
-        <StatCard 
-          title="Attendance Risk (<75%)" 
-          value={stats.at_risk_count} 
-          subtitle="Students needing review"
-          icon={AlertTriangle}
-          color="danger"
-        />
       </div>
 
       {/* Features Checklist Grid */}
